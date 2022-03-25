@@ -202,6 +202,11 @@ M       index.js
 
 三路合并（three-way merge）也是我第一次接触的概念，它是一种比较复杂的操作，在次不做过多的解释，只是说明一下，它是如何工作的。后面有机会再给大家解释一下三路合并的原理。
 
+### git switch 小结
+
+以上应该是`git switch`命令最常用的API，虽然还有很多API，但是我们这里不再赘述，因为当前API可以覆盖日常使用的90%需求了。
+文章有任何疑惑、错误，希望大家可以通过github指正修改。
+
 [Merge branch 'nd/switch-and-restore']: https://github.com/git/git/commit/f496b064fc1135e0dded7f93d85d72eb0b302c22
 [gitster]: https://github.com/gitster
 [git switch]: https://git-scm.com/docs/git-switch
