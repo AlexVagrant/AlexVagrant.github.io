@@ -54,7 +54,7 @@ tag: git restore switch
 **command:** `git switch -C <new-branch>`
 
 场景：假设我们接到了一个新需求，从master分支上创建了一个`feat/xxx`分支进行开发，当我们开发到中途时，当前的新需求被砍掉了，换成了一个和当前需求毫无关系的新需求，我们想还是继续使用`feat/xxx`分支开发，并且摒弃以前的修改时，就可以使用分支重置功能。
-同时我们可以使用它来进行分之创建。
+同时我们可以使用它来进行分支创建。
 
 - 分支重置
 
@@ -159,10 +159,10 @@ git switch -C <branch> <remote/local-branch>
 <image src="/assets/images/git_three_way_merge_1.png"/>
 
 - 你将要切换到的分支
-<image src="/assets/images/git_three_way_merge_1.png"/>
+<image src="/assets/images/git_three_way_merge_2.png"/>
 
 - 当前分支
-<image src="/assets/images/git_three_way_merge_1.png"/>
+<image src="/assets/images/git_three_way_merge_3.png"/>
 
 当我们执行 `git switch -m develop3` 时，会出现如下提示：
 
