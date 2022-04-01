@@ -6,7 +6,7 @@ categories: git
 tag: git restore switch
 ---
 
-<image src="/assets/images/git_restore.png"/>
+<image src="/assets/images/git_restore_switch.png"/>
  
 <br/>
 <hr/>
