@@ -204,7 +204,7 @@ M       index.js
 
 ### git switch 小结
 
-以上应该是`git switch`命令最常用的API，虽然还有很多API，但是我们这里不再赘述，因为当前API可以覆盖日常使用的90%需求了。
+以上应该是`git switch`命令最常用的API，虽然还有很多API，这里不再赘述，因为当前API可以覆盖日常使用的80%需求了。
 文章有任何疑惑、错误，希望大家可以通过github指正修改。
 
 [Merge branch 'nd/switch-and-restore']: https://github.com/git/git/commit/f496b064fc1135e0dded7f93d85d72eb0b302c22
