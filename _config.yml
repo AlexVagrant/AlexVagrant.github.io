@@ -32,6 +32,7 @@ github_username:  AlexVagrant
 # Build settings
 theme: minima
 #theme: jekyll-theme-minimal
+#theme: no-style-please
 plugins:
   - jekyll-feed
 
