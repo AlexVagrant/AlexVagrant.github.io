@@ -6,6 +6,7 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: 我是谁?
 github_username:  AlexVagrant
+timezone: Asia/Shanghai
 
 # Build settings
 theme: minima
