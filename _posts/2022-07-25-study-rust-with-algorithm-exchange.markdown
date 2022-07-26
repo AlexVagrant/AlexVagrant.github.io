@@ -5,6 +5,7 @@ tag: rust
 date: 2022-07-25 23:21
 categories: rust algorithm
 tag: rust algorithm vec ---
+---
 
 > [题目地址](https://leetcode.cn/problems/diao-zheng-shu-zu-shun-xu-shi-qi-shu-wei-yu-ou-shu-qian-mian-lcof/)
 
