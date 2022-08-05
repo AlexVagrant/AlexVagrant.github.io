@@ -1,4 +1,3 @@
-
 title: AlexVagrant Blog
 email: 1113629699@qq.com
 description: ""
@@ -14,9 +13,11 @@ include:
   - _pages
 
 # Build settings
-theme: tale
+#theme: tale
 permalink: /:year-:month-:day/:title
-paginate:   5
+paginate: 5
+disqus: jekyll-tale
+
 #theme: minima
 #theme: jekyll-theme-minimal
 #theme: no-style-please
