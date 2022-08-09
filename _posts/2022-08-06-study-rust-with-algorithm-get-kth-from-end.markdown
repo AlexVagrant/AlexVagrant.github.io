@@ -33,7 +33,56 @@ impl Solution {
     }
 }
 ```
-### as_ref 是什么
+### 知识点列举
+
+- as_ref()方法
+- is_some()方法 
+- cloned()方法
+
+### 解题思路
+
+双指针通过设置两个指针的间距，和给定的k相同，当前面的指针到达底部时，后面的指针所拥有的节点就是题目中所要找到的节点
+
+```rust
+impl Solution {
+  pub fn get_kth_from_end(head: Option<Box<ListNode>>, k: i32) -> Option<Box<ListNode>> {
+    let mut start = head.as_ref();
+    for i in 0..k {
+      match start.take() {
+        Some(node) => start = node.next.as_ref(),
+          None => {
+            return None;
+          }
+      }
+    }
+    let mut end = head.as_ref();
+    while let Some(node) = start.take() {
+      start = node.next.as_ref();
+      end = end.unwrap().next.as_ref();
+    }
+    end.cloned()
+  }
+}
+```
+
+### as_ref() 是什么 为什么需要使用as_ref()
+
+一开始`start`和`end`两个可变变量并没有使用`head.as_ref()`来设置变量指向的节点值，而是使用`clone()`方法。
+
+`clone()`方法拷贝了两个相同的`head`链表，第一次提交时发现内存占比较高只超过16%的用户.
+
+```
+执行用时：0 ms, 在所有 Rust 提交中击败了100.00%的用户
+内存消耗：2.2 MB, 在所有 Rust 提交中击败了16.67%的用户
+```
+
+通过查询题解发现，大部分人使用的是`as_ref()`方法,当我讲`clone()`替换为`as_ref()`时，数据如下所示，看起来还是非常可观的。
+
+```
+执行用时：0 ms, 在所有 Rust 提交中击败了100.00%的用户
+内存消耗：1.9 MB, 在所有 Rust 提交中击败了93.33%的用户
+```
+
 as_ref是转引用函数，将具有所有权对象转换成引用对象，在不改变被转换对象的基础上产生一个引用对象。
 
 
