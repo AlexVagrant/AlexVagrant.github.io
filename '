@@ -84,79 +84,14 @@ impl Solution {
 ```
 
 `as_ref()`是转引用函数，将具有所有权对象转换成引用对象，在不改变被转换对象的基础上产生一个引用对象。
-目前有：`Option`, `Box`，`Result`这三种类型默认提供支持as_ref
 
-`Brrow`允许owner把自已的拥用权“借出”，borrow实际上创建了到原始资源的reference.
+`Brrow`
 
-
-`Borrow`可以直接在`int`, `&str`, `String`, `vec`, `[]`, `struct`, `enum` 类型上直接指定&来引用。
-
-`as_ref()`则不行，它需要声明泛型 `T：AsRef<int>`, `T: AsRef<str>`, `T:AsRef<struct name>` 来支持。
-
-#### 实现`AsRef trait`<sup><a href="#ref1">1</a></sup>
-
-由于`String`和`&str`都实现了`AsRef<str>`，所有我们可以接受`String`和`&str`作为参数,可以调用`as_ref()`方法转化为`&str`
-
-```rust
-fn is_hello<T: AsRef<str>>(s: T) {
-  assert_eq!("hello", s.as_ref());
-}
-
-fn main() {
-  // s1是&str类型, str类型实现了AsRef<str>，&str也实现了AsRef<str>
-  let s1 = "hello";
-  is_hello(s1);
-  // s2是String类型, 实现了AsRef<str>, &String也实现了AsRef<str>
-  let s2 = "hello".to_string();
-  is_hello(s2);
-}
-```
-
-上面`is_hello`方法的泛型定义是`trait bound`语法，因为例子场景比较直观，也可以使用`trait bound`的语法糖
-
-```rust
-fn is_hello(s: impl AsRef<str>) {
-  assert_eq!("hello", s.as_ref());
-}
-```
-
-为未实现的类型实现`AsRef<T>`，因为`AsRef<T>`是`trait`我们要实现其中定义的方法`AsRef<T>` trait 定义如下：
-
-```rust
-pub trait AsRef<T>
-where
-    T: ?Sized, 
-{
-    fn as_ref(&self) -> &T;
-}
-```
-
-```rust
-enum Msg {
-  Hello,
-  World,
-}
-
-impl AsRef<str> for Msg {
-  fn as_ref(&self) -> &str {
-    match self {
-      Msg::Hello => "hello",
-      Msg::World => "world",
-    }
-  }
-}
-
-fn main() {
-  let msg = Msg::Hello;
-  assert_eq!("hello", msg.as_ref());
-}
-```
+如何实现`AsRef trait`<sup><a href="#ref1">1</a></sup>
 
 ### is_some() 是什么
-
 如果想知道一个`Option`是否含有值，但不会使用到值的时候，可以用`is_some()`来进行判断`is_some()`
 返回的是`Boolean`
-
 ```rust
 let has_item = if let Some(_value) = option { true } else { false };
 // becomes
@@ -164,7 +99,4 @@ let has_item = option.is_some();
 ```
 
 ### 参考链接
-
-1. <a name="ref1" href="https://blog.frognew.com/2020/07/rust-asref-and-asmut-trait.html">rust语言基础学习: 使用AsRef和AsMut trait实现不同引用之间的转换</a>
-
-- <a href="https://doc.rust-lang.org/std/convert/trait.AsRef.html" target="_blank">https://doc.rust-lang.org/std/convert/trait.AsRef.html</a>
+1. <p name="ref1">[123](https://blog.frognew.com/2020/07/rust-asref-and-asmut-trait.html)</p>
