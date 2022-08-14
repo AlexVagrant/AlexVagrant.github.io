@@ -50,9 +50,9 @@ impl Solution {
     for i in 0..k {
       match start.take() {
         Some(node) => start = node.next.as_ref(),
-          None => {
-            return None;
-          }
+        None => {
+          return None;
+        }
       }
     }
     let mut end = head.as_ref();
@@ -163,8 +163,101 @@ let has_item = if let Some(_value) = option { true } else { false };
 let has_item = option.is_some();
 ```
 
+下面这段描述了什么场景下可以使用`is_some()`以及如何使用，下面的使用场景比较单一因为场景只针对于本题不做额外的扩展
+
+下面使用`is_some()`也不是最优场景，只是介绍这里可以使用`is_some()`；
+
+```rust
+impl Solution {
+  pub fn get_kth_from_end(head: Option<Box<ListNode>>, k: i32) -> Option<Box<ListNode>> {
+    ... 
+    while let Some(node) = start.take() {
+      ...
+      // 修改前
+      end = end.unwrap().next.as_ref();
+      // 修改后
+      if end.is_some() {
+        end = end.next.as_ref(); 
+      }
+    }
+    ...
+  }
+}
+```
+
+### cloned() 
+```rust
+pub fn cloned(self) -> Option<T>
+where
+    T: Clone, 
+```
+
+通过clone Option 中的内容将`Option<&T>`映射到`Option<T>`
+
+```rust
+let x = 12;
+let opt_x = Some(&x);
+assert_eq!(opt_x, Some(&12)); //ok
+let cloned = opt_x.cloned();
+assert_eq!(cloned, Some(12)); //ok
+```
+
+下面是`Rust`源码中`Option cloned`的实现，可以看到`cloned`内部是帮开发人员处理`Some`和`None`的情况，其中`Some`中调用了`clone()`方法
+
+```rust
+impl<T> Option<&mut T> {
+  #[must_use = "`self` will be dropped if the result is not used"]
+  #[stable(feature = "rust1", since = "1.0.0")]
+  #[rustc_const_unstable(feature = "const_option_cloned", issue = "91582")]
+  pub const fn cloned(self) -> Option<T>
+  where
+    T: ~const Clone,
+  {
+    match self {
+      Some(t) => Some(t.clone()),
+      None => None,
+    }
+  }
+}
+```
+`clone()`方法是`Rust`内置trait`Clone`中的方法,`derive` 属性会在使用 `derive` 语法标记的类型上生成对应 `trait` 的默认实现的代码。在上面结构体中已经添加了`Clone`
+
+```rust
+#[derive(PartialEq, Eq, Clone, Debug)]
+pub struct ListNode {
+  pub val: i32,
+  pub next: Option<Box<ListNode>>
+}
+```
+
+`clone()`方法大概如下所示:
+
+```rust 
+pub struct ListNode {
+  pub val: i32,
+  pub next: Option<Box<ListNode>>
+}
+impl<T> Clone for ListNode {
+  fn clone(&self) -> Self {
+    *self 
+  }
+}
+
+```
+
+到此处我们应该可以理解`cloned()`到底做什么事情，怎么做的，在哪里用。探究的过程也让我加深了对`Rust`内置`trait`的理解，学会如何查询`Rust`内置`trait`的实现。
+
+### 总结
+
+`as_ref()`、`is_some()`、`cloned()` 属于基础方法，在`Rust`中使用频率非常高，希望这篇文章可以加深对`Rust`基础方法的理解，在世纪开发过程中能运用自如。
+
+
 ### 参考链接
 
 1. <a name="ref1" href="https://blog.frognew.com/2020/07/rust-asref-and-asmut-trait.html">rust语言基础学习: 使用AsRef和AsMut trait实现不同引用之间的转换</a>
 
 - <a href="https://doc.rust-lang.org/std/convert/trait.AsRef.html" target="_blank">https://doc.rust-lang.org/std/convert/trait.AsRef.html</a>
+
+- <a href="https://doc.rust-lang.org/src/core/option.rs.html#1827-1829">Rust Option cloned</a>
+
+- <a href="https://doc.rust-lang.org/std/clone/trait.Clone.html"> Rust trait.Clone</a>
