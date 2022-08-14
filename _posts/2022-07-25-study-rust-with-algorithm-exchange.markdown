@@ -4,7 +4,7 @@ title: 通过算法学习rust之调整数组顺序使奇数位于偶数前面
 tag: rust 
 date: 2022-07-25 23:21
 categories: rust algorithm
-tag: rust algorithm vec ---
+tag: rust algorithm 
 ---
 
 > [题目地址](https://leetcode.cn/problems/diao-zheng-shu-zu-shun-xu-shi-qi-shu-wei-yu-ou-shu-qian-mian-lcof/)
