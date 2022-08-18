@@ -13,10 +13,12 @@ include:
   - _pages
 
 # Build settings
-#theme: tale
+theme: tale
 permalink: /:year-:month-:day/:title
 paginate: 5
 disqus: jekyll-tale
+
+comments: true
 
 #theme: minima
 #theme: jekyll-theme-minimal
