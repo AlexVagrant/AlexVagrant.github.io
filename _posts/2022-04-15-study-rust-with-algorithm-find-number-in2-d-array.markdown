@@ -8,8 +8,8 @@ tag: rust algorithm vec
 ---
 
 
-> [题目地址]([https://leetcode-cn.com/problems/er-wei-shu-zu-zhong-de-cha-zhao-lcof/])
-> 
+> [题目地址](https://leetcode-cn.com/problems/er-wei-shu-zu-zhong-de-cha-zhao-lcof/)
+ 
 
 此处我们不讨论算法题的解法是不是最优的，我们只关心使用rust解决算法题时可以学到哪些rust语法，通过练习加深对于rust的理解。
 
@@ -52,9 +52,9 @@ mod test {
 
  
 
-[****Rust 有没有创建多维数组优雅的方式？](****[https://www.zhihu.com/question/465345382](https://www.zhihu.com/question/465345382)) 
+[Rust 有没有创建多维数组优雅的方式？](https://www.zhihu.com/question/465345382)
 
-[Spore]([https://www.zhihu.com/people/spore-96-93](https://www.zhihu.com/people/spore-96-93))给我提供了两种方案 1、`ndarray`，2、`macro_rules!`, 个人对`宏`解决方案比较感兴趣，就此学习一下如何定义多维数组宏。
+[Spore](https://www.zhihu.com/people/spore-96-93](https://www.zhihu.com/people/spore-96-93)给我提供了两种方案 1、`ndarray`，2、`macro_rules!`, 个人对`宏`解决方案比较感兴趣，就此学习一下如何定义多维数组宏。
 
 宏定义的规则如下 `(Pattern) **=>** { Exapnsion };`，`宏`中可以定义多个规则，`rust`会对规则进行从上而下的匹配，当完全匹配时，会执行对应的操作。
 
@@ -118,11 +118,11 @@ let v3 = vecnd![
 ];
 ```
 
-`($([$($inner:tt)*]),* $(,)*)` 表示重复匹配`[pattern],` ，其中有个概念叫尾部分割符详情可以查看[宏小册]([https://zjp-cn.github.io/tlborm/])
+`($([$($inner:tt)*]),* $(,)*)` 表示重复匹配`[pattern],` ，其中有个概念叫尾部分割符详情可以查看[宏小册](https://zjp-cn.github.io/tlborm/)
 
 我们将匹配到的`$inner`用来创建第二维数组`vec![$($inner)*]` 然后进行重复创建`$(vec![$($inner)*]),*`
 
-[Spore]([https://www.zhihu.com/people/spore-96-93](https://www.zhihu.com/people/spore-96-93) 提到的递归宏更加有趣，匹配到`[pattern],` 不直接进行数组创建`$(vec![$($inner)*]),*`，而是再次调用`vecnd!` 直到匹配到不是`[pattern],` 模式后再进行数组创建，实现任意维度的数组，不过这种类型的数组在算法中并不常见。
+[Spore](https://www.zhihu.com/people/spore-96-93) 提到的递归宏更加有趣，匹配到`[pattern],` 不直接进行数组创建`$(vec![$($inner)*]),*`，而是再次调用`vecnd!` 直到匹配到不是`[pattern],` 模式后再进行数组创建，实现任意维度的数组，不过这种类型的数组在算法中并不常见。
 
 ```rust
 macro_rules! vecnd {
@@ -132,10 +132,12 @@ macro_rules! vecnd {
 			vecnd![$($inner)*] // new
 		),*]
 	};
+
 	// 匹配非 [pattern], 模式
 	($($t:tt)*) => {
     vec![$($t)*]
   };
+
 }
 
 let v3 = vecnd![
