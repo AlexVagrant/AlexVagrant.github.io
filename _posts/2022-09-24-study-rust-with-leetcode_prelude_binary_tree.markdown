@@ -227,4 +227,57 @@ fn main() {
 
 ### VecDeque
 
-`VecDeque`是`Rust`标准库中对于双端队列的实现。
+`VecDeque`是`Rust`标准库中对于双端队列的实现。双端队列在`Rust`中相对于数组最大的优势是可以在数据结构的两端进行操作，数组只能对`push`进入的最新的数据进行操作。`VecDeque`有如下四个方法方便开发者操作：
+
+- `pop_front`从第一个移除
+
+- `pop_back`从最后一个移除
+
+- `push_front`在最前面添加
+
+- `push_back`添加到最后一个
+
+需要注意的一点是`pop_*`有返回值类型是`Option<T>`，`push_*`没有返回值
+
+### leetcode_prelude实现数组转化为二叉树步骤
+
+```rust
+let mut nodes = std::collections::VecDeque::new();
+nodes.push_back(head.as_ref().unwrap().clone());
+for i in elems[1..].chunks(2) {
+  let node = nodes.pop_front().unwrap();
+  if let Some(val) = i[0]{
+    node.borrow_mut().left = Some(Rc::new(RefCell::new($crate::TreeNode::new(val))));
+    nodes.push_back(node.borrow().left.as_ref().unwrap().clone());
+  }
+  if i.len() > 1 {
+    if let Some(val) = i[1] {
+      node.borrow_mut().right = Some(Rc::new(RefCell::new($crate::TreeNode::new(val))));
+      nodes.push_back(node.borrow().right.as_ref().unwrap().clone());
+    }
+  }
+}
+```
+
+1. 定义一个双端队列`nodes`，`nodes`添加数据都是从数据末尾添加。
+
+2. 每次通过`chunks`方法取出两个数据，作为当前要操作的节点的左右子节点。
+
+3. 当前要操作的节点通过双端队列的`pop_front`获取，这里主要是因为后面添加节点的顺序是先添加左节点，然后再添加右节点
+
+4. 判断左右节点数据是不是存在，只要是为了处理`null`。如果存更新当前节点的左右子节点，并更新队列中的值。
+
+下图是一个简单的数组转化为二叉树的过程供大家参考：
+
+<img src="/assets/images/array_to_binary_tree.png" alt="">
+
+
+### 总结
+
+我们通过学习`leetcode_prelude`中通过`leetcode`给予的数组生成二叉树方法，学习了`stringify!`、`parse`、`chunks`、`VecDeque`的使用场景和部分原理。
+
+`stringify!`将参数全部转化为`&'static str`字符串、`parse`转化字符串为指定的数据类型、`chunks`按照参数数字进行数组拆分、`VecDeque`双端队列可以进行队列的两端操作，尾部添加头部移除。
+
+这个知识点不光在算法题中可以使用，在平常的项目开发中使用频率更高，希望这篇文章能帮助你理解`leetcode`二叉树的生成原理，`Rust`标准库中方法的使用场景以及如何使用，并且可以自主的通过官方文档学习`Rust`这些零成本抽象方法达到知其然知其所以然。
+
+
