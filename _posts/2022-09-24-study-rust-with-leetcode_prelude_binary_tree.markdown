@@ -3,7 +3,7 @@ layout: post
 title: 通过leetcode_prelude学习Rust之二叉树生成
 date: 2022-08-24 22:30:00  
 categories: rust algorithm binary_tree
-tag: [rust, algorithm, binary_tree,] 
+tag: [binary_tree] 
 ---
 
 > [项目地址](https://github.com/Aloxaf/leetcode_prelude/blob/master/leetcode_prelude/src/btree.rs)
