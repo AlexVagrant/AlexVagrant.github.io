@@ -1,10 +1,9 @@
 ---
 layout: post
 title: 通过算法学习rust之链表中倒数第K个节点
-tag: rust 
 date: 2022-08-06 22:55
 categories: rust algorithm
-tag: rust algorithm
+tag: [rust, algorithm,] 
 ---
 
 > [题目地址](https://leetcode.cn/problems/lian-biao-zhong-dao-shu-di-kge-jie-dian-lcof/)

@@ -3,7 +3,7 @@ layout: post
 title: Git restore 和 Git switch 基本API使用 一
 date: 2021-10-08 14:44:34 GMT+0800
 categories: git
-tag: git restore switch
+tag: [git, restore, switch]
 ---
 
 <image src="/assets/images/git_restore_switch.png"/>

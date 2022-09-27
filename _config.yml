@@ -45,7 +45,7 @@ defaults:
       layout: tagged
 
 #baseurl: ""
-permalink: /blog/:slug
+# permalink: /blog/:slug
 timezone: America/New_York
 future: false
 
@@ -55,7 +55,7 @@ exclude:
 
 exclude: [vendor]
 
-Blog: /blog
+About: /about
 
 # Add general links to site pages here
 links:
