@@ -9,6 +9,7 @@ body {
     overflow-wrap: break-word;
     line-height: 1.5;
     color: #444;
+    font-size: 16px;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
