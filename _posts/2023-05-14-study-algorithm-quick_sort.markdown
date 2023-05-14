@@ -3,7 +3,7 @@ layout: post
 title: 双指针快速排序
 date: 2023-05-14 23:16:32   
 categories: rust algorithm prime
-tag: [quick_sort, c++, algorithm] 
+tag: [quick_sort] 
 ---
 
 > https://www.acwing.com/problem/content/787/ 
