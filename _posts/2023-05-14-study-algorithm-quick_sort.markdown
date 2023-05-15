@@ -9,6 +9,7 @@ tag: [quick_sort]
 > https://www.acwing.com/problem/content/787/ 
 
 
+
 ```c++
 #include <cstdio>
 #include <algorithm>
@@ -40,4 +41,10 @@ int main()
   for (int i = 0; i < n; i++) printf("%d ", q[i]);
   return 0;
 }
+```
+
+### do-while替换写法 do-while的写法更加直观一些
+```
+while (q[++i] < x);
+while (q[--j] > x);
 ```
