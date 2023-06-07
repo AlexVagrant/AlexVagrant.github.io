@@ -2,7 +2,7 @@
 layout: post
 title: 双指针快速排序
 date: 2023-05-14 23:16:32   
-categories: rust algorithm prime
+categories: c++ algorithm prime
 tag: [quick_sort] 
 ---
 
