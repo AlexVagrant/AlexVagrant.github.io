@@ -150,6 +150,63 @@ int main()
   return 0;
 }
 ```
+
+### bellman-ford 算法
+```c++
+// bellman-ford
+#include <iostream>
+#include <algorithm>
+#include <cstring>
+
+using namespace std;
+
+const int INF = 0x3f3f3f3f;
+const int N = 510, M = 10000+10;
+
+struct Edge
+{
+  int a, b, w;
+} edges[M];
+
+int dist[N], backup[N];
+bool st[N];
+
+int n, m, k;
+
+void bellman_ford()
+{
+  memset(dist, 0x3f, sizeof dist);  
+  memset(backup, 0x3f, sizeof backup);  
+  dist[1] = 0;
+  for (int i = 1; i <= k; i++) {
+    memcpy(backup, dist, sizeof dist);
+    for (int j = 1; j <= m; j++)
+    {
+      int a = edges[j].a, b = edges[j].b, w = edges[j].w;
+      if (dist[b] > backup[a] + w) {
+        dist[b] = backup[a] + w;
+      }
+    }
+  }
+  if (dist[n] >= INF / 2) puts("impossible");
+  else printf("%d\n", dist[n]);
+}
+
+int main()
+{
+  scanf("%d%d%d", &n, &m, &k);
+  for (int i = 1; i <= m; i++)
+  {
+    int a, b, w;
+    scanf("%d%d%d", &a, &b, &w);
+    edges[i] = {a, b, w};
+  }
+
+  bellman_ford();
+  return 0;
+}
+
+```
 ### 参考文献
 [^1]: [acwing 最短路笔记（1）Dijkstra朴素版](https://www.acwing.com/blog/content/140/)
 
