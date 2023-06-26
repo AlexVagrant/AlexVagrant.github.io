@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Dijkstra最短路算法
+title: 最短路算法
 date: 2023-06-07 15:49:00  
 categories: c++ algorithm prime
 tag: [shortest_path] 
@@ -16,6 +16,7 @@ Dijkstra朴素算法与堆优化算法时间复杂度对比[^1]
 |                         | <font color="#ff0000">m≈n²</font> | <font color="#ff0000">m≈n</font> |
 | 朴素Dijkstra (稠密图)   | n²                                | n²                               |
 | 堆优化Dijkstra (稀疏图) | n² log n                          | m log n                          |
+
 
 ### 朴素Dijkstra算法
 
@@ -207,6 +208,74 @@ int main()
 }
 
 ```
+
+### spfa (队列优化版bellman-ford算法)
+
+```c++
+#include <iostream>
+#include <cstring>
+#include <algorithm>
+
+using namespace std;
+
+const int N = 1e5+10, INF = 0x3f3f3f3f;
+
+int h[N], e[N], w[N], ne[N], idx;
+
+void add(int a, int b, int c)
+{
+  e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
+}
+
+int dist[N], q[N];
+
+bool st[N];
+
+int n, m;
+
+void spfa()
+{
+  memset(dist, 0x3f, sizeof dist);
+  dist[1] = 0;
+  int hh = 0, tt = -1;
+  q[++tt] = 1;
+  st[1] = true;
+  while (hh <= tt)
+  {
+    int t = q[hh++];
+    // 如果t（节点）在队列中，说明t的最短路更新了，需要重新加入到队列中
+    st[t] = false;
+    for (int i = h[t]; i != -1; i = ne[i]) {
+      int j = e[i];
+      if (dist[j] > dist[t] + w[i])
+      {
+        dist[j] = dist[t] + w[i];
+        if (!st[j]) {
+          st[j] = true;
+          q[++tt] = j;
+        }
+      }
+    }
+  }
+  if (dist[n] > INF/2) puts("impossible");
+  else printf("%d\n", dist[n]);
+}
+
+int main()
+{
+  scanf("%d%d", &n, &m);
+  memset(h, -1, sizeof h);
+  for (int i = 0; i < m; i++)
+  {
+    int a, b, c;
+    scanf("%d%d%d", &a, &b, &c);
+    add(a, b, c);
+  }
+  spfa();
+  return 0;
+}
+```
+
 ### 参考文献
 [^1]: [acwing 最短路笔记（1）Dijkstra朴素版](https://www.acwing.com/blog/content/140/)
 
