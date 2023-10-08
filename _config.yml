@@ -32,10 +32,6 @@ compress_html:
   ignore:
     envs: []
 
-# sass:
-#   sass_dir: css
-#   style:    compressed
-
 collections:
   my_tags:
     output: true
@@ -69,3 +65,9 @@ links:
 # Add links for more focus here
 special_links:
   "Search": https://duckduckgo.com
+
+sass:
+  sass_dir: _sass
+  style:    compressed
+
+

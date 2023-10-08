@@ -71,9 +71,11 @@ GEM
 PLATFORMS
   universal-darwin-21
   universal-darwin-22
+  universal-darwin-23
 
 DEPENDENCIES
   jekyll-bear-theme!
+  jekyll-sass-converter
   rouge
 
 BUNDLED WITH
