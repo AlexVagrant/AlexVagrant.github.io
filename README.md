@@ -85,6 +85,23 @@ Use them as templates for your front matter.
 
 >To test your theme, run `bundle exec jekyll serve` and open your browser at `http://localhost:4000`.
 
+Generate new post
+
+```
+rake post title="xxxx"
+```
+
+Check rouge support style
+
+```
+rougify help style
+```
+
+Generate highlight style css
+
+```
+rougify style monokai > css/syntax.css
+```
 
 ## Contributing
 
