@@ -46,7 +46,7 @@ defaults:
 
 #baseurl: ""
 # permalink: /blog/:slug
-timezone: America/New_York
+timezone: Asia/Shanghai
 future: true
 
 exclude:
@@ -70,4 +70,8 @@ sass:
   sass_dir: _sass
   style:    compressed
 
-
+theme_config:
+  appearance: "auto" # can be "light", "dark" or "auto"
+  back_home_text: ".." # customize text for homepage link in post layout
+  date_format: "%Y-%m-%d" # customize how date is formatted
+  show_description: false # show blog description in home page

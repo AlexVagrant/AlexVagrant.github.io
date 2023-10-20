@@ -17,6 +17,9 @@ html::-webkit-scrollbar {
     display: none;
 }
 
+::-webkit-scrollbar {
+  display: none; /* Chrome Safari */
+}
 /* Hide scrollbar for IE, Edge and Firefox */
 html {
     -ms-overflow-style: none;
@@ -34,6 +37,10 @@ h6,
 strong,
 b {
     color: #222;
+}
+
+h2, h3, h4, h5, h6 {
+    margin-top: 3rem;
 }
 
 a {
@@ -126,8 +133,12 @@ content {
     line-height: 1.6;
 }
 
-table {
-    width: 100%;
+table { width: 100%; }
+
+table, th, td {
+  border: thin solid black;
+  border-collapse: collapse;
+  padding: 0.4rem;
 }
 
 hr {
@@ -343,3 +354,4 @@ small a {
     padding: 50px;
     text-align: center;
 }
+
