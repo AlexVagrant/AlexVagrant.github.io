@@ -4,4 +4,4 @@ title: Hello
 ---
 
 
-## An easy to use, minimal, text focused Jekyll theme
+## 思考为什么这样是正确的。
