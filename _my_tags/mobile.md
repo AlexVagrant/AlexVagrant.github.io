@@ -1,4 +1,0 @@
----
-slug: mobile
-name: Mobile
----

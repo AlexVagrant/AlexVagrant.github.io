@@ -1,4 +1,0 @@
----
-slug: vec
-name: Vec
----

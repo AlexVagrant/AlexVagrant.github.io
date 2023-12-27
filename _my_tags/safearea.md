@@ -1,4 +1,0 @@
----
-slug: safearea
-name: SafeArea
----

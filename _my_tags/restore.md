@@ -1,4 +1,0 @@
----
-slug: restore
-name: Restore
----

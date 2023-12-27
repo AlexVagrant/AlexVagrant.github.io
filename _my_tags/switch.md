@@ -1,4 +1,0 @@
----
-slug: switch
-name: Switch
----
