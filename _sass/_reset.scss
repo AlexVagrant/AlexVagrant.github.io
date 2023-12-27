@@ -149,22 +149,6 @@ img {
     max-width: 100%;
 }
 
-code {
-    font-family: monospace;
-    padding: 2px;
-    border-radius: 3px;
-}
-
-.highlight,
-.code {
-    padding: 1px 15px;
-    background-color: #f2f2f2;
-    color: #222;
-    border-radius: 3px;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    overflow:auto;
-}
 
 blockquote {
     border-left: 1px solid #999;
@@ -303,14 +287,6 @@ ul.discover-posts li small a {
 
     a {
         color: #8cc2dd;
-    }
-
-    code {
-        background-color: #777;
-    }
-
-    pre code {
-        color: #ddd;
     }
 
     blockquote {

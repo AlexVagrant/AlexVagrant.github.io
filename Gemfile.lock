@@ -56,10 +56,6 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     mercenary (0.4.0)
-    no-style-please (0.1.0)
-      jekyll (~> 4.1)
-      jekyll-feed (~> 0.14)
-      jekyll-seo-tag (~> 2.6)
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
     public_suffix (5.0.0)
@@ -84,8 +80,10 @@ PLATFORMS
 
 DEPENDENCIES
   jekyll-bear-theme!
+  jekyll-feed
+  jekyll-redirect-from
   jekyll-sass-converter
-  no-style-please
+  jekyll-seo-tag
   rake
   rouge
 
