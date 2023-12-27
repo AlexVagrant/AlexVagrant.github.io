@@ -11,8 +11,6 @@ url: "https://alexvagrant.github.io/" # the base hostname & protocol for your si
 #########################
 # more settings
 
-theme: no-style-please
-
 plugins:
   - jekyll-redirect-from
 
