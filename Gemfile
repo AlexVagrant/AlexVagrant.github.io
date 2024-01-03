@@ -8,3 +8,4 @@ gem 'rake' # 自动生成文章
 gem 'jekyll-redirect-from'
 gem 'jekyll-feed'
 gem 'jekyll-seo-tag'
+gem 'jekyll-archives'
