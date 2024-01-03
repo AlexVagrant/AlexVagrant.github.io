@@ -33,16 +33,9 @@ compress_html:
     envs: []
 
 collections:
-  my_tags:
+  category:
     output: true
-    permalink: /tagged/:slug/
-defaults:
-  -
-    scope:
-      path: ""
-      type: my_tags
-    values:
-      layout: tagged
+    permalink: /category/:slug/
 
 #baseurl: ""
 # permalink: /blog/:slug

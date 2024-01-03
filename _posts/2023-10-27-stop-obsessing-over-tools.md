@@ -2,7 +2,7 @@
 layout: post
 title: "停止沉迷于工具"
 date: 2023-10-27
-category: bolg
+category: blog
 tags: [blog]
 ---
 

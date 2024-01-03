@@ -1,0 +1,41 @@
+---
+layout: default
+---
+
+{%-include back_link.html-%}
+<main>
+  {% if site.categories[page.slug] %}
+  <p>
+      Here be writings, categories as <b>"{{ page.slug }}"</b>.<br>
+  </p>
+
+  <ul class="blog-posts">
+      {% assign post_list = '' | split: ',' %}
+      {% for post in site.categories[page.slug] %}
+      {% for category in post.categories %}
+      {% assign post_list = post_list | push: post %}
+      {% endfor %}
+      {% endfor %}
+      {% for post in post_list %}
+      {% unless post == previous %}
+      <li>
+          <span>
+              <i>
+                  <time datetime="2022-01-28" pubdate="">
+                      {{ post.date | date: "%b %-d, %Y" }}
+                  </time>
+              </i>
+          </span>
+          <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
+      </li>
+      {% endunless %}
+      {% assign previous = post %}
+      {% endfor %}
+
+  </ul>
+  {% else %}
+  <p>
+      There are no posts in {{ page.slug }}.
+  </p>
+  {% endif %}
+</main>

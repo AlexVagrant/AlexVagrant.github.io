@@ -1,0 +1,11 @@
+<ul>
+	{% for category in site.categories %}
+
+	{% assign category_slug = category | first %}
+	{% assign no_of_posts = category | last | size %}
+
+	<li>
+		<a href="{{ 'category/' | relative_url }}{{ category_slug }}" title="See all posts by {{ category_slug }} category">#{{ category_slug }}</a>
+	</li>
+	{% endfor %}
+</ul>

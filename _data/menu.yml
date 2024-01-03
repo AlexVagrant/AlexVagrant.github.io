@@ -4,7 +4,6 @@
 entries:
   - title: info
     entries:
-      - title: a (nearly) no-CSS, fast, minimalist Jekyll theme.
       - title: github repo
         url: https://github.com/AlexVagrant/AlexVagrant.github.io
 
@@ -16,22 +15,13 @@ entries:
       show_more_url: archive.html
 
   - title: posts by category
-    post_list:
-      category: blog
-      show_more: true
-      show_more_text: See more posts...
-      show_more_url: example2-archive.html
+    category_list: true
+
+  - title: another list
+    entries:
+      - title: 关于
+        url: about
 
   - title: rss
     url: feed.xml
   
-  - title: another list
-    entries:
-      - title: with subitems
-        entries:
-          - title: with subsubitems
-          - title: example page
-            url: about
-  - title: PRO TIP
-    entries:
-      - title: to edit this menu, edit _data/menu.yml file

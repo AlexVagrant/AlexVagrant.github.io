@@ -2,7 +2,7 @@
 layout: post
 title:  "macos jekyll 环境配置"
 date: 2023-12-27
-category: bolg
+category: blog
 tags: [blog]
 ---
 
