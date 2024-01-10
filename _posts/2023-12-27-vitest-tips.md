@@ -15,3 +15,13 @@ test('should log an error', () => {
   expect(console.error).toHaveBeenCalledWith('your error message')
 })
 ```
+
+### vitest promise reject error
+
+```ts
+test("test promise reject error", async () => {
+    await expect(request("https://example.com/api", {}, successEc, isToast, timeout)).rejects.toThrowError(
+        "mk.ajax error~! {\"url\":\"https://example.com/api\",\"params\":{}}"
+    );
+})
+```
