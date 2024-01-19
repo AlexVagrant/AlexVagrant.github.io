@@ -29,4 +29,13 @@ test("test promise reject error", async () => {
 })
 ```
 
+### vitest test a class instance method call inside a function 
 
+```ts
+test("vitest test a class instance method call inside a function", async () => {
+    vi.spyOn(IM.prototype, 'init').mockImplementation(() => {})
+    const { dispatch } = useIMStore()
+    await dispatch() // dispatch will call IM class init  
+    expect(IM.prototype.init).toHaveBeenCalled() 
+})
+```
