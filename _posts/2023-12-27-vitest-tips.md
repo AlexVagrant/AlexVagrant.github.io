@@ -58,3 +58,40 @@ it("vitest test vue3 plugin with arguments", async () => {
     //...
 })
 ```
+
+### testing hooks value change and method call in vue3 component
+
+rootStore.ts
+```ts
+export let activeSome: undefined | any;
+
+interface _SetActiveSome {
+  (pinia: any): any
+  (pinia: undefined): undefined
+  (pinia: any | undefined): any | undefined
+}
+
+export const setActiveSome: _SetActiveSome = some => (activeSome = some)
+```
+
+index.ts (plugin & hook)
+```ts
+const somePlugin = {
+  install(app: App) {
+    const hooks = useSome()
+    app.provide(SomeSymbol, hooks)
+    app.config.globalProperties.$some = hooks
+    if (!activeSome)
+      setActiveSome(hooks)
+  },
+}
+
+export function useSome() {
+  return activeSome!
+}
+
+export {
+    somePlugin,
+    useSome,
+}
+```
