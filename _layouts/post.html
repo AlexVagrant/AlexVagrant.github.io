@@ -16,6 +16,13 @@ layout: default
     {{ content }}
 </article>
 
+<span>Tags: [
+  {% for tag in page.tags %}
+    {% capture tag_name %}{{ tag }}{% endcapture %}
+    <a href="/tag/{{ tag_name }}"><code class="highligher-rouge"><nobr>{{ tag_name }}</nobr></code>&nbsp;</a>
+  {% endfor %}
+]</span>
+
 <script
     src="https://giscus.app/client.js"
     data-repo="AlexVagrant/AlexVagrant.github.io"
