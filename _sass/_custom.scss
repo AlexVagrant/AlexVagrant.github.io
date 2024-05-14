@@ -51,16 +51,24 @@ body {
   font-size: 1.2rem;
 }
 
+a {
+    color: #3354AA;
+    text-decoration: none;
+    background: transparent;
+}
+
 code {
   /* 更改code字体 */
   font-family: 'JetBrains Mono', Times, Menlo, Monaco, Consolas, Andale Mono, lucida console, Courier New, monospace;
-  font-size: 1.05rem;
+  font-size: 0.9rem;
 }
+
 
 .post-meta { text-align: right; }
 
 .language-plaintext {
-  color: #f92672;
+  /* color: #f92672; */
+  color: #B94A48;
   font-weight: bold;
   padding: 0 5px;
 }
@@ -117,6 +125,3 @@ code {
   }
 }
 /* end custom scss snippet */
-
-
-
