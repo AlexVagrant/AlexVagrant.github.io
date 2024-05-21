@@ -41,7 +41,7 @@ collections:
     permalink: /tag/:tag/
 
 #baseurl: ""
-# permalink: /blog/:slug
+permalink: /posts/:title
 timezone: Asia/Shanghai
 future: true
 
