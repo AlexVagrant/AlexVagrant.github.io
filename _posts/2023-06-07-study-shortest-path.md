@@ -1,9 +1,9 @@
 ---
 layout: post
 title: 最短路算法
-date: 2023-06-07 15:49:00  
+date: 2023-06-07 15:49:00
 categories: algorithm
-tag: [shortest_path, c++, prime] 
+tags: [shortest_path, c++, prime]
 ---
 
 ### 最短路算法图谱 [^1]
@@ -66,7 +66,7 @@ int main()
     memset(g, 0x3f, sizeof g);
     for (int i = 0; i < m; i++)
     {
-      int a, b, c; 
+      int a, b, c;
       scanf("%d%d%d", &a, &b, &c);
       g[a][b] = min(g[a][b], c);
     }
@@ -113,7 +113,7 @@ void dijkstra()
   priority_queue<PII, vector<PII>, greater<PII>> q;
   q.push({0, 1});
   dist[1] = 0;
-  
+
   while (q.size())
   {
     auto t = q.top();
@@ -124,10 +124,10 @@ void dijkstra()
     for (int i = h[ver]; i != -1; i = ne[i])
     {
         int j = e[i];
-        
+
         if (dist[j] > distance + w[i])
         {
-            
+
             dist[j] = distance + w[i];
             q.push({dist[j], j});
         }
@@ -139,7 +139,7 @@ void dijkstra()
 
 int main()
 {
-  scanf("%d%d", &n, &m);  
+  scanf("%d%d", &n, &m);
   memset(h, -1, sizeof h);
   for (int i = 0; i < m; i++)
   {
@@ -176,8 +176,8 @@ int n, m, k;
 
 void bellman_ford()
 {
-  memset(dist, 0x3f, sizeof dist);  
-  memset(backup, 0x3f, sizeof backup);  
+  memset(dist, 0x3f, sizeof dist);
+  memset(backup, 0x3f, sizeof backup);
   dist[1] = 0;
   for (int i = 1; i <= k; i++) {
     memcpy(backup, dist, sizeof dist);
@@ -278,5 +278,3 @@ int main()
 
 ### 参考文献
 [^1]: [acwing 最短路笔记（1）Dijkstra朴素版](https://www.acwing.com/blog/content/140/)
-
-

@@ -3,11 +3,11 @@ layout: post
 title: Git restore 和 Git switch 基本API使用 一
 date: 2021-10-08 14:44:34 GMT+0800
 categories: git
-tag: [git]
+tags: [git]
 ---
 
 <image src="/assets/images/git_restore_switch.png"/>
- 
+
 <br/>
 <hr/>
 <br/>
@@ -34,7 +34,7 @@ tag: [git]
 
 - 基于当前分支创建, 创建分支时不指定基础分支名
 
-  ```sh 
+  ```sh
   git switch -c <new-branch>
   ```
 
@@ -43,13 +43,13 @@ tag: [git]
   ```sh
   git switch -c <new-branch> <remote/local-branch>
   ```
-- 新旧命令对比  
+- 新旧命令对比
 
   |  git switch   |   git checkout   |
   | :-----------: | :--------------: |
   | git switch -c | git checkout -b  |
 
-### 2、分支创建或重置 
+### 2、分支创建或重置
 
 **command:** `git switch -C <new-branch>`
 
@@ -76,7 +76,7 @@ git switch -C <branch> <remote/local-branch>
   git switch -C <new-branch>
 ```
 
-- 新旧命令对比  
+- 新旧命令对比
 
   |  git switch   |   git checkout   |
   | :-----------: | :--------------: |
@@ -93,7 +93,7 @@ git switch -C <branch> <remote/local-branch>
 
 分离头指针找回方法： 如果不小心退出了分离头指针，并且未正确保存记录可以通过`git reflog`命令，查看最近的操作记录，找到对应的commitid并切换回去继续操作
 
-- 新旧命令对比  
+- 新旧命令对比
 
   |  git switch            |   git checkout         |
   | :-----------:          | :--------------:       |
@@ -115,12 +115,12 @@ git switch -C <branch> <remote/local-branch>
  - 分支 'feat/guess_branch' 设置为... -> 执行了创建操作
  - 设置为跟踪来自 'origin' 的远程分支 'feat/guess_branch' -> 为新分支设置上游信息操作
  - 切换到一个新分支 'feat/guess_branch' -> 切换分支操作
- 
+
  可以理解为`git switch remote/branch` 是下面命令的一种简写模式
  ```
   $ git switch -c <branch> --track <remote>/<branch>
  ```
-- 新旧命令对比  
+- 新旧命令对比
 
   |  git switch         |   git checkout       |
   | :-----------:       | :--------------:     |
@@ -137,7 +137,7 @@ git switch -C <branch> <remote/local-branch>
 
 工作区的修改包含，已经添加到暂存区的修改（git add .），不包含已经提交到本地仓库的修改(git commit -m"")。
 
-- 新旧命令对比  
+- 新旧命令对比
 
   |  git switch            |   git checkout          |
   | :-----------:          | :--------------:        |
@@ -172,7 +172,7 @@ M       index.html
 M       index.js
 切换到分支 'develop3'
 您的分支与上游分支 'origin/develop3' 一致。
-➜  git_switch_restore git:(develop3) ✗ 
+➜  git_switch_restore git:(develop3) ✗
 ```
 
 然后我们再使用 `git status` 查看three-way merge的状态，会看到如下结果：
@@ -193,7 +193,7 @@ M       index.js
         修改：     index.html
 
 修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
-➜  git_switch_restore git:(develop3) ✗ 
+➜  git_switch_restore git:(develop3) ✗
 ```
 
 其中产生了一个未合并的文件，这个文件是由于我们在`git switch -m`命令时产生的冲突文件，需要我们手动解决冲突，后面就是正常的merge后解决冲突、提交等操作了。

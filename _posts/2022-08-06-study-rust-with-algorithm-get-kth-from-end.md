@@ -3,7 +3,7 @@ layout: post
 title: 通过算法学习rust之链表中倒数第K个节点
 date: 2022-08-06 22:55
 categories: algorithm
-tag: [rust] 
+tags: [rust]
 ---
 
 > [题目地址](https://leetcode.cn/problems/lian-biao-zhong-dao-shu-di-kge-jie-dian-lcof/)
@@ -16,7 +16,7 @@ tag: [rust]
 //   pub val: i32,
 //   pub next: Option<Box<ListNode>>
 // }
-// 
+//
 // impl ListNode {
 //   #[inline]
 //   fn new(val: i32) -> Self {
@@ -28,14 +28,14 @@ tag: [rust]
 // }
 impl Solution {
     pub fn get_kth_from_end(head: Option<Box<ListNode>>, k: i32) -> Option<Box<ListNode>> {
-        
+
     }
 }
 ```
 ### 知识点列举
 
 - as_ref()方法
-- is_some()方法 
+- is_some()方法
 - cloned()方法
 
 ### 解题思路
@@ -124,7 +124,7 @@ fn is_hello(s: impl AsRef<str>) {
 ```rust
 pub trait AsRef<T>
 where
-    T: ?Sized, 
+    T: ?Sized,
 {
     fn as_ref(&self) -> &T;
 }
@@ -169,14 +169,14 @@ let has_item = option.is_some();
 ```rust
 impl Solution {
   pub fn get_kth_from_end(head: Option<Box<ListNode>>, k: i32) -> Option<Box<ListNode>> {
-    ... 
+    ...
     while let Some(node) = start.take() {
       ...
       // 修改前
       end = end.unwrap().next.as_ref();
       // 修改后
       if end.is_some() {
-        end = end.next.as_ref(); 
+        end = end.next.as_ref();
       }
     }
     ...
@@ -184,11 +184,11 @@ impl Solution {
 }
 ```
 
-### cloned() 
+### cloned()
 ```rust
 pub fn cloned(self) -> Option<T>
 where
-    T: Clone, 
+    T: Clone,
 ```
 
 通过clone Option 中的内容将`Option<&T>`映射到`Option<T>`
@@ -231,14 +231,14 @@ pub struct ListNode {
 
 `clone()`方法大概如下所示:
 
-```rust 
+```rust
 pub struct ListNode {
   pub val: i32,
   pub next: Option<Box<ListNode>>
 }
 impl<T> Clone for ListNode {
   fn clone(&self) -> Self {
-    *self 
+    *self
   }
 }
 

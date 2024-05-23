@@ -3,7 +3,7 @@ layout: post
 title: 通过算法学习rust之反转链表
 date: 2022-08-18 23:09
 categories: algorithm
-tag: [linklist, rust] 
+tags: [linklist, rust]
 ---
 
 > [题目地址](https://leetcode.cn/problems/fan-zhuan-lian-biao-lcof/)
@@ -15,7 +15,7 @@ tag: [linklist, rust]
 //   pub val: i32,
 //   pub next: Option<Box<ListNode>>
 // }
-// 
+//
 // impl ListNode {
 //   #[inline]
 //   fn new(val: i32) -> Self {

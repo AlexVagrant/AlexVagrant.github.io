@@ -68,6 +68,7 @@ theme_config:
   appearance: "auto" # can be "light", "dark" or "auto"
   back_home_text: ".." # customize text for homepage link in post layout
   date_format: "%Y-%m-%d" # customize how date is formatted
+  month_format: "%m-%d"
   show_description: false # show blog description in home page
 
 google_analytics: "G-X2X1M5R9RD"

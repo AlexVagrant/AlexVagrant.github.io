@@ -18,9 +18,13 @@
           show_more_url=item.post_list.show_more_url
      -%}
     {%-endif-%}
-     
+
     {%- if item.category_list -%}
       {%-include category_list.html-%}
+    {%- endif -%}
+
+    {%- if item.tag_list -%}
+      {%-include tag_list.html-%}
     {%- endif -%}
 
     {%-if item.entries-%}

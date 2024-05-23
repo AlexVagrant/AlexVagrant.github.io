@@ -3,12 +3,12 @@ layout: post
 title: 通过算法学习rust之二维数组中查找
 date: 2022-04-15 11:43
 categories: algorithm
-tag: [rust]
+tags: [rust]
 ---
 
 
 > [题目地址](https://leetcode-cn.com/problems/er-wei-shu-zu-zhong-de-cha-zhao-lcof/)
- 
+
 
 此处我们不讨论算法题的解法是不是最优的，我们只关心使用rust解决算法题时可以学到哪些rust语法，通过练习加深对于rust的理解。
 
@@ -49,7 +49,7 @@ mod test {
 
 当我们直接从leetcode粘贴过来的测试用例时需要一个一个的在开头添加`vec!`感觉这种写法比较麻烦就去知乎上提问了个问题：
 
- 
+
 
 [Rust 有没有创建多维数组优雅的方式？](https://www.zhihu.com/question/465345382)
 
@@ -215,4 +215,3 @@ let ans = Solution::find_number_in2_d_array(matrix, -1);
 所以为了防止无符号整形的溢出，必然需要在减法之前编译进去一个范围判断。
 
 以上就是通过二维数组查找所学到的知识点，作为个人学习记录，同时也希望能帮助到大家。
-

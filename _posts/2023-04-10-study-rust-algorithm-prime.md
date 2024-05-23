@@ -1,9 +1,9 @@
 ---
 layout: post
 title: Rust之判断一个数字是否是质数/素数
-date: 2023-04-10 21:37:06   
+date: 2023-04-10 21:37:06
 categories: algorithm
-tag: [prime, rust] 
+tags: [prime, rust]
 ---
 
 ### 质数/素数定义：
@@ -15,8 +15,8 @@ pub fn is_prime(n: usize) -> bool {
   let mut i = 2;
   while i * i <= n {
     if n % i == 0 {
-      return false; 
-    } 
+      return false;
+    }
     i++;
   }
   return n >= 2;
@@ -33,5 +33,3 @@ mod tests {
 }
 
 ```
-
-

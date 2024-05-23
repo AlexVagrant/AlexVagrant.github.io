@@ -1,9 +1,9 @@
 ---
 layout: post
 title: 通过算法学习rust之合并两个排序的链表
-date: 2022-08-23 00:00:10  
+date: 2022-08-23 00:00:10
 categories: algorithm
-tag: [linklist, rust] 
+tags: [linklist, rust]
 ---
 
 > [题目地址](https://leetcode.cn/problems/he-bing-liang-ge-pai-xu-de-lian-biao-lcof/)
@@ -15,7 +15,7 @@ tag: [linklist, rust]
 //   pub val: i32,
 //   pub next: Option<Box<ListNode>>
 // }
-// 
+//
 // impl ListNode {
 //   #[inline]
 //   fn new(val: i32) -> Self {
@@ -63,7 +63,7 @@ impl Solution {
                 cur = l2;
                 l2 = next;
             }
-            
+
             ans.as_mut().unwrap().next = cur;
             ans = ans.unwrap().next.as_mut();
         }

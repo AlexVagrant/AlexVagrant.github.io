@@ -17,6 +17,9 @@ entries:
   - title: posts by category
     category_list: true
 
+  - title: posts by tag
+    tag_list: true
+
   - title: another list
     entries:
       - title: 关于
@@ -24,4 +27,3 @@ entries:
 
   - title: rss
     url: feed.xml
-  

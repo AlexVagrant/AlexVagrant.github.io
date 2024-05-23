@@ -1,12 +1,12 @@
 ---
 layout: post
 title: 双指针快速排序
-date: 2023-05-14 23:16:32   
+date: 2023-05-14 23:16:32
 categories: algorithm
-tag: [quick_sort, c++, prime] 
+tags: [quick_sort, c++, prime]
 ---
 
-> https://www.acwing.com/problem/content/787/ 
+> https://www.acwing.com/problem/content/787/
 
 
 

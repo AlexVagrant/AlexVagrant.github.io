@@ -1,9 +1,9 @@
 ---
 layout: post
 title: html2canvas不支持css省略号解决
-date: 2023-10-20 13:15:32   
+date: 2023-10-20 13:15:32
 categories: css
-tag: [html2canvas] 
+tags: [html2canvas]
 ---
 
 ### html2canvas 目前只支持下面这些 css 属性
@@ -42,7 +42,7 @@ tag: [html2canvas]
       * lineHeight 获取元素的行高
       * maxHeight 计算元素的最大高度, 如果当前元素的最大高度超过 maxHeight 说明换行了
       */
-      const compStyles = getComputedStyle(text, 'line-height'); 
+      const compStyles = getComputedStyle(text, 'line-height');
       const lineHeight = compStyles.getPropertyValue('line-height').split('px')[0];
       const maxHeight = 1 * Math.ceil(+lineHeight);
 
@@ -57,15 +57,15 @@ tag: [html2canvas]
       if(text.offsetHeight > maxHeight) {
         var temp = "";
         text.textContent = temp;
-       
+
         while(text.offsetHeight <= maxHeight){ // while 循环停止条件
             temp = tempstr.substring(0, i+1);
             i++;
             text.textContent = temp;
         }
-        
+
         var slen = temp.length;
-        /** 
+        /**
         * 当判断条件停止时，当前文本的高度已经大于设定的最大高度
         * 这里需要删减一个字符已让文本高度达到预定值
         */

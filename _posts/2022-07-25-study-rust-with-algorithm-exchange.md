@@ -3,7 +3,7 @@ layout: post
 title: 通过算法学习rust之调整数组顺序使奇数位于偶数前面
 date: 2022-07-25 23:21
 categories: algorithm
-tag: [rust] 
+tags: [rust]
 ---
 
 > [题目地址](https://leetcode.cn/problems/diao-zheng-shu-zu-shun-xu-shi-qi-shu-wei-yu-ou-shu-qian-mian-lcof/)
@@ -20,7 +20,7 @@ impl Solution {
 
 - rust所有权之二次释放问题
 - 位运算
-- swap 方法 
+- swap 方法
 
 ### 解题思路
 
@@ -37,7 +37,7 @@ impl Solution {
 
     let mut left = 0;
     let mut right = nums.len() - 1;
-    
+
     while left < right {
       if nums[left] % 2 == 1 {
         left += 1;
@@ -50,8 +50,8 @@ impl Solution {
         nums[right] = tmp;
       } else {
         right -= 1;
-      } 
-    } 
+      }
+    }
     nums
   }
 }
@@ -112,8 +112,8 @@ impl Solution {
         ...
       } else {
         ...
-      } 
-    } 
+      }
+    }
     nums
   }
 }
@@ -137,8 +137,8 @@ impl Solution {
         nums[right] = tmp;
       } else {
         ...
-      } 
-    } 
+      }
+    }
     nums
   }
 }
@@ -159,8 +159,8 @@ impl Solution {
         nums.swap(left,right);
       } else {
         ...
-      } 
-    } 
+      }
+    }
     nums
   }
 }

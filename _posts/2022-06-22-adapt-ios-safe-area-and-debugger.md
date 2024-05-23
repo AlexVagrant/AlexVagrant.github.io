@@ -3,7 +3,7 @@ layout: post
 title: "ios 安全区域适配和调试"
 date: 2022-06-22 16:53
 categories: css
-tag: [safearea, ios]
+tags: [safearea, ios]
 ---
 
 ## 创建ios webview 调试应用
@@ -165,13 +165,13 @@ body {
 
 ```css
 /* iPhone13/pro */
-@media only screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3), 
+@media only screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3),
 /* iPhone13/12 Mini | iPhone 11 Pro | iPhone XS|X */
-  screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3), 
+  screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3),
 /* iPhone13/12 Pro Max */
-  screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3), 
+  screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3),
 /* iPhone11 Pro Max */
-  screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3), 
+  screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3),
 /* iPhone11 | iPhone XR */
   screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)
 {
@@ -204,5 +204,3 @@ screen and (max-device-width: 414px) and (max-device-height: 736px) and (-webkit
 3. 如何进行ios安全区域适配，分两种情况：
   - width=device-width
   - specifical width
-
-

@@ -3,11 +3,11 @@ layout: post
 title: Git restore 和 Git switch 基本API使用 二
 date: 2022-04-01 20:10:00 GMT+0800
 categories: git
-tag: [git]
+tags: [git]
 ---
 
 <image src="/assets/images/git_restore_switch.png"/>
- 
+
 <br/>
 <hr/>
 <br/>
@@ -43,7 +43,7 @@ branch 如果没有明确指定则是目标分支的最后一次commit，也可�
 tag 相对理解比较简单，文件/路径 恢复到指定`tag`的状态上 例子：`git restore —source v0.2 .`
 
 
-- 新旧命令对比  
+- 新旧命令对比
 
   |  git restore                                 |   git reset/checkout   |
   | :------------------------------------------: | :--------------------------------------------------------------------------------------------: |
@@ -92,7 +92,7 @@ index 0000000..e69de29
 (1/1) Apply addition to worktree [y,n,q,a,d,?]?
 ```
 
-- 新旧命令对比  
+- 新旧命令对比
 
   |  git restore                                                  |   git reset/checkout   |
   | :-----------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------: |
@@ -140,7 +140,7 @@ nothing added to commit but untracked files present (use "git add" to track)
 
 执行`git restore —staged <path/file>`后，会将`index`区域的文件状态恢复到恢复源的状态。
 
-- 新旧命令对比  
+- 新旧命令对比
 
   |  git restore                    |   git reset/checkout  |
   | :-----------------------------: | :-------------------: |
@@ -151,7 +151,7 @@ nothing added to commit but untracked files present (use "git add" to track)
 `-- worktree`操作的是git中的worktree(工作区，当前未进行`git add`操作的修改), `--worktree`的恢复源是git中的`index`区域。
 
 
-- 新旧命令对比  
+- 新旧命令对比
 
   |  git restore                      |   git reset/checkout  |
   | :-------------------------------: | :-------------------: |
@@ -162,9 +162,8 @@ nothing added to commit but untracked files present (use "git add" to track)
 
 ### git提供的 restore 参数别名
 
-git 为 `-source`、`-staged`、`-worktree` 提供了别名，`--source` == `-s`，`--staged` == `-S`，`--worktree` == `-W` 
+git 为 `-source`、`-staged`、`-worktree` 提供了别名，`--source` == `-s`，`--staged` == `-S`，`--worktree` == `-W`
 
 将当前分支恢复到`HEAD`状态，可执行`git restore -s@ -SW .`;
 
 感谢大家阅读。
-

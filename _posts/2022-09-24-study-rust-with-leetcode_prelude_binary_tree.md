@@ -1,9 +1,9 @@
 ---
 layout: post
 title: 通过leetcode_prelude学习Rust之二叉树生成
-date: 2022-08-24 22:30:00  
+date: 2022-08-24 22:30:00
 categories: algorithm
-tag: [binary_tree, rust] 
+tags: [binary_tree, rust]
 ---
 
 > [项目地址](https://github.com/Aloxaf/leetcode_prelude/blob/master/leetcode_prelude/src/btree.rs)
@@ -100,7 +100,7 @@ mod tests {
 - VecDeque
 - leetcode 数组转为二叉树
 
-### 需要额外说明的点 
+### 需要额外说明的点
 
 leetcode中使用`Rc`和`RefCell`构建二叉树是一种非常麻烦的操作，尤其是在解题的时候。leetcode代码模版是由机器生成的，所以无法控制后面这篇文章给出了[leetcode生成的 Rust 代码和优雅的 Rust 代码对比](https://github.com/pretzelhammer/rust-blog/blob/master/posts/translations/zh-hans/learning-rust-in-2020.md)
 
@@ -112,7 +112,7 @@ leetcode中使用`Rc`和`RefCell`构建二叉树是一种非常麻烦的操作�
 
 `let btree = btree![-1, 2, 3, null];` leetcode 输入是一个含有`null`值的数组，`Rust`中并没有`null`的关键字，所以需要对`null`进行单独处理。
 
-`$($e:expr), *`捕获`btree!`宏中的内容,每次捕获的内容赋值给`$e`，如上例`$e`分别为`-1`, `2`, `3` ,`null`, 
+`$($e:expr), *`捕获`btree!`宏中的内容,每次捕获的内容赋值给`$e`，如上例`$e`分别为`-1`, `2`, `3` ,`null`,
 我们可以通过宏语法轻松创建一个捕获值的数组`let elems = vec![$($e), *];`
 
 我们运行时`Rust`编译器产生如下错误：
@@ -155,7 +155,7 @@ pub fn parse<F: FromStr>(&self) -> Result<F, F::Err> {
 ```
 `parse`返回的是`Result<F, F::Err>`类型，`leetcode_prelude`通过`ok()`转化为`Option`类型，`Result`也是表示值存不存在的一种枚举但是它需要解释值不存在的原因，在算法中我们不关心值不存在的原因，只关心值存不存在所以我们只用`Option`类型即可。
 
-### chunks 
+### chunks
 
 `chunks`是`Vec`struct中的方法，这个方法的实现还是比较简单的，通过传入的`chunk_size`参数，返回一个Chunk实例。
 
@@ -207,7 +207,7 @@ impl<'a, T> Iterator for Chunks<'a, T> {
   }
   //...
 }
- 
+
 ```
 `next`中会判断判断数组是否为空，会的话返回`None`，否则对数组的长度和`chunk_size`进行大小比较选择最小的那个作为拆分值，因为如果`split_at`的参数大于数组的长度的话程序会`painc`。`split_at`改变数组所以`next`中的入参是`&mut self`。
 
@@ -279,5 +279,3 @@ for i in elems[1..].chunks(2) {
 `stringify!`将参数全部转化为`&'static str`字符串、`parse`转化字符串为指定的数据类型、`chunks`按照参数数字进行数组拆分、`VecDeque`双端队列可以进行队列的两端操作，尾部添加头部移除。
 
 这个知识点不光在算法题中可以使用，在平常的项目开发中使用频率更高，希望这篇文章能帮助你理解`leetcode`二叉树的生成原理，`Rust`标准库中方法的使用场景以及如何使用，并且可以自主的通过官方文档学习`Rust`这些零成本抽象方法达到知其然知其所以然。
-
-
