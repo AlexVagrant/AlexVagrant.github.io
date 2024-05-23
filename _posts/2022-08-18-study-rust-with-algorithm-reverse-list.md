@@ -2,8 +2,8 @@
 layout: post
 title: 通过算法学习rust之反转链表
 date: 2022-08-18 23:09
-categories: rust algorithm linklist
-tag: [linklist] 
+categories: algorithm
+tag: [linklist, rust] 
 ---
 
 > [题目地址](https://leetcode.cn/problems/fan-zhuan-lian-biao-lcof/)

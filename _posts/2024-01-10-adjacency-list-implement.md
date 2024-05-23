@@ -3,7 +3,7 @@ layout: post
 title: "邻接表的理解、实现、遍历"
 date: 2024-01-10
 category: algorithm 
-tags: 
+tags: [linklist] 
 ---
 
 邻接表数据结构一般是用来存图结构的，因为树是一种特殊的图，也可以使用邻接表来存树结构 

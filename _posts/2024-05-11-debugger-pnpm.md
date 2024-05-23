@@ -3,7 +3,7 @@ layout: post
 title: "pnpm 源码调试"
 date: 2024-05-11
 category: pnpm
-tags: pnpm debugger vscode
+tags: [pnpm, debugger, vscode]
 ---
 
 <image src="/assets/images/pnpm_4.png"/>

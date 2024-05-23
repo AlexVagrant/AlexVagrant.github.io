@@ -2,8 +2,8 @@
 layout: post
 title: 通过算法学习rust之合并两个排序的链表
 date: 2022-08-23 00:00:10  
-categories: rust algorithm linklist
-tag: [linklist] 
+categories: algorithm
+tag: [linklist, rust] 
 ---
 
 > [题目地址](https://leetcode.cn/problems/he-bing-liang-ge-pai-xu-de-lian-biao-lcof/)

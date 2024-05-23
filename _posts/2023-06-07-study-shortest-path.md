@@ -2,8 +2,8 @@
 layout: post
 title: 最短路算法
 date: 2023-06-07 15:49:00  
-categories: c++ algorithm prime
-tag: [shortest_path] 
+categories: algorithm
+tag: [shortest_path, c++, prime] 
 ---
 
 ### 最短路算法图谱 [^1]

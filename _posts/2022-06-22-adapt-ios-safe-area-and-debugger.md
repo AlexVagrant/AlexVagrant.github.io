@@ -2,8 +2,8 @@
 layout: post
 title: "ios 安全区域适配和调试"
 date: 2022-06-22 16:53
-categories: ios css
-tag: [safearea]
+categories: css
+tag: [safearea, ios]
 ---
 
 ## 创建ios webview 调试应用

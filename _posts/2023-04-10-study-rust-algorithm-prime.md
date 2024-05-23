@@ -2,8 +2,8 @@
 layout: post
 title: Rust之判断一个数字是否是质数/素数
 date: 2023-04-10 21:37:06   
-categories: rust algorithm prime
-tag: [prime] 
+categories: algorithm
+tag: [prime, rust] 
 ---
 
 ### 质数/素数定义：

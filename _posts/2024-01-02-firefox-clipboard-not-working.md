@@ -2,7 +2,7 @@
 layout: post
 title: "Firefox 粘贴版无法使用"
 date: 2024-01-02
-category: clipboard
+category: tool
 tags: [Firefox, clipboard] 
 ---
 

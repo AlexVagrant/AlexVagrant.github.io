@@ -3,7 +3,7 @@ layout: post
 title: "git autocrlf 解决 obsidian windows macos git 同步冲突问题"
 date: 2024-01-22 
 category: git
-tags: 
+tags: [obsidian] 
 ---
 
 ### 问题场景

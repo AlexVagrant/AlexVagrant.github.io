@@ -3,7 +3,7 @@ layout: post
 title: "the shortest hamilton path"
 date: 2024-01-09
 category: algorithm
-tags: 
+tags: [hamilton, c++] 
 ---
 
 > https://www.acwing.com/problem/content/93/

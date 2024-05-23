@@ -2,7 +2,7 @@
 layout: post
 title: html2canvas不支持css省略号解决
 date: 2023-10-20 13:15:32   
-categories: js css
+categories: css
 tag: [html2canvas] 
 ---
 

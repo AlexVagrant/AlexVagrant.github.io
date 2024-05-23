@@ -2,8 +2,8 @@
 layout: post
 title: 双指针快速排序
 date: 2023-05-14 23:16:32   
-categories: c++ algorithm prime
-tag: [quick_sort] 
+categories: algorithm
+tag: [quick_sort, c++, prime] 
 ---
 
 > https://www.acwing.com/problem/content/787/ 
