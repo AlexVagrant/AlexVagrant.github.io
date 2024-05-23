@@ -1,4 +1,4 @@
-<!-- {%-if include.category-%}
+{%-if include.category-%}
   {%-assign posts = site.categories[include.category]-%}
 {%-else-%}
   {%-assign posts = site.posts-%}
@@ -22,37 +22,4 @@
       <li><a href="{{ include.show_more_url }}">{{ include.show_more_text | default: "Show more..." }}</a></li>
     {%- endif -%}
   </ul>
-{%- endif -%} -->
-
-{% for post in site.posts %}
-
-        {% capture year_of_current_post %}
-        {{ post.date | date: "%Y" }}
-        {% endcapture %}
-
-        {% capture year_of_previous_post %}
-        {{ post.previous.date | date: "%Y" }}
-        {% endcapture %}
-
-        {% if forloop.first %}
-        <h2>{{ year_of_current_post }}</h2>
-        <ul>
-        {% endif %}
-
-                <li>
-                    <span>{{- post.date | date: site.theme_config.month_format -}}</span>
-                    <a href="{{ post.url }}">{{ post.title }}</a>
-                </li>
-
-        {% if forloop.last %}
-        </ul>
-        {% else %}
-        {% if year_of_current_post != year_of_previous_post %}
-        </ul>
-
-        <h2>{{ year_of_previous_post }}</h2>
-        <ul>
-        {% endif %}
-        {% endif %}
-
-{% endfor %}
+{%- endif -%}
