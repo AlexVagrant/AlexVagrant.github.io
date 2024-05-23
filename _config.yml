@@ -49,8 +49,6 @@ exclude:
 - README.md
 - LICENSE.md
 
-exclude: [vendor]
-
 About: /about
 
 # Add general links to site pages here
