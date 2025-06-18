@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "LLM 代理：单代理与多代理架构之争"
+title: "LLM 代理：单代理与多代理架构之争（AI）"
 date: 2025-06-18
 category: AI
 tags: [AI, Agent, Multi-Agent] 
