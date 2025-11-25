@@ -3,5 +3,5 @@
 
 @charset 'UTF-8';
 
-@use 'custom';
-@use "no-style-please";
+@use 'custom' as *;
+@use "no-style-please" as *;
