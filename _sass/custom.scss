@@ -8,23 +8,8 @@
   src: url('/assets/fonts/JetBrainsMono-Regular.ttf'); /* Legacy iOS */
 }
 
-@font-face {
-  font-family: 'LXGWWenKai Bold';
-  font-style: normal;
-  src: url('/assets/fonts/LXGWWenKai-Bold.ttf');  /* Safari, Android, iOS */
-}
-
-@font-face {
-  font-family: 'LXGWWenKai Light';
-  font-style: normal;
-  src: url('/assets/fonts/LXGWWenKai-Light.ttf');  /* Safari, Android, iOS */
-}
-
-@font-face {
-  font-family: 'LXGWWenKai Regular';
-  font-style: normal;
-  src: url('/assets/fonts/LXGWWenKai-Regular.ttf');  /* Safari, Android, iOS */
-}
+/* 使用 CDN 托管的 LXGWWenKai 字体，避免加载大型本地字体文件 */
+@import url('https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.1.0/style.css');
 
 
 body {
