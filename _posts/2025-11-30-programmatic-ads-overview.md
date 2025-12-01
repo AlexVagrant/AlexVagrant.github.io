@@ -6,8 +6,6 @@ category: adTech
 tags: [ adTech, programmaticAd, glossary ]
 ---
 
-> 记录一次面向产品、算法和商业同学的程序化广告速查笔记，方便在需求评审或优化复盘时快速对齐概念与链路。
-
 ## 关键概念速查
 
 - **eCPM（expected Cost Per Mille）**：千次展示期望收入，是 DSP、媒体和广告主共同关注的统一指标，通常由预测 CTR、CVR 以及出价策略共同决定。
