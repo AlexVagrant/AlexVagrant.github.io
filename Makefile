@@ -14,6 +14,11 @@ serve: clean
 	@echo "🚀 启动 Jekyll 服务器..."
 	@bundle exec jekyll serve
 
+## 启动本地服务器（包含草稿）
+serve-drafts: clean
+	@echo "🚀 启动 Jekyll 服务器（包含草稿）..."
+	@bundle exec jekyll serve --drafts
+
 ## 构建站点
 build: clean
 	@echo "🔨 构建站点..."
@@ -34,14 +39,15 @@ deploy: clean build
 help:
 	@echo "📚 可用命令："
 	@echo ""
-	@echo "  make clean   - 清理所有缓存"
-	@echo "  make serve   - 清理缓存并启动本地服务器"
-	@echo "  make build   - 清理缓存并构建站点"
-	@echo "  make deploy  - 清理、构建、提交并推送到 GitHub"
-	@echo "  make help    - 显示此帮助信息"
+	@echo "  make clean        - 清理所有缓存"
+	@echo "  make serve        - 清理缓存并启动本地服务器"
+	@echo "  make serve-drafts - 清理缓存并启动本地服务器（包含草稿）"
+	@echo "  make build        - 清理缓存并构建站点"
+	@echo "  make deploy       - 清理、构建、提交并推送到 GitHub"
+	@echo "  make help         - 显示此帮助信息"
 	@echo ""
 	@echo "💡 开发流程："
-	@echo "  1. make serve  # 本地预览"
+	@echo "  1. make serve-drafts # 本地预览（包含草稿）"
 	@echo "  2. 编辑内容"
-	@echo "  3. make deploy # 发布到 GitHub"
+	@echo "  3. make deploy       # 发布到 GitHub"
 
