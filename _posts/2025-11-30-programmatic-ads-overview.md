@@ -50,6 +50,80 @@ IAB（美国互动广告局）在 2014 年发布的《原生广告手册》中�
 5. **竞价回传与胜出**：所有 DSP 在严格的超时时间内返回出价，AdX 采用二价或一价模式决出胜者，并把胜出 DSP 的素材与监测链接下发给媒体。
 6. **广告展示与上报**：媒体渲染素材给用户，触发曝光、点击、转化等监测上报，数据再回流 DMP 和 DSP，支撑下一轮模型训练与策略调优。
 
+## DSP 广告投放完整流程
+
+以下流程图展示了广告主通过 DSP 进行广告投放的完整生命周期，从投放配置到效果优化的闭环过程：
+
+```mermaid
+sequenceDiagram
+    participant 广告主
+    participant DSP
+    participant AdExchange
+    participant SSP
+    participant 媒体
+    participant 用户
+
+    Note over 广告主,DSP: 1. 投放配置阶段
+    广告主->>DSP: 发起广告投放
+    Note right of 广告主: 设置目标受众<br/>上传广告创意<br/>配置出价策略
+
+    Note over DSP,媒体: 2. 实时竞价阶段（RTB）
+    用户->>媒体: 访问页面/App
+    媒体->>SSP: 上报广告位请求
+    SSP->>AdExchange: 发送可用广告位
+    Note right of SSP: 包含广告位ID<br/>底价信息<br/>用户画像
+
+    AdExchange->>DSP: 广播竞价请求
+    Note right of AdExchange: 分发给多个DSP<br/>设置竞价超时
+
+    Note over DSP: 3. 决策阶段
+    DSP->>DSP: 受众匹配判断
+    DSP->>DSP: 预测CTR/CVR
+    DSP->>DSP: 计算eCPM与出价
+    
+    DSP->>AdExchange: 返回出价和素材
+    Note right of DSP: 目标受众匹配<br/>出价金额<br/>广告创意ID
+
+    Note over AdExchange,SSP: 4. 竞价结算阶段
+    AdExchange->>AdExchange: 选择最高出价者
+    AdExchange->>SSP: 返回胜出DSP信息
+    SSP->>媒体: 下发广告素材与监测链接
+
+    Note over 媒体,用户: 5. 广告展示阶段
+    媒体->>用户: 渲染展示广告
+    用户->>媒体: 查看/点击广告
+    
+    媒体->>DSP: 上报曝光/点击事件
+    DSP->>广告主: 汇总投放数据
+
+    Note over 广告主,DSP: 6. 监测与优化阶段
+    DSP->>DSP: 分析投放效果
+    Note right of DSP: 计算ROI/eCPM<br/>分析受众表现<br/>评估创意效果
+    
+    DSP->>DSP: 自动优化调整
+    Note right of DSP: 调整出价策略<br/>优化受众定向<br/>更新创意素材
+
+    DSP-->>广告主: 推送优化建议
+```
+
+### 流程说明
+
+1. **投放配置阶段**：广告主在 DSP 平台配置投放参数，包括目标受众画像、预算分配、出价策略和广告创意。
+
+2. **实时竞价阶段**：当用户访问媒体时，SSP 将广告位信息发送到 Ad Exchange，由 AdX 同时向多个 DSP 发起竞价邀请。
+
+3. **决策阶段**：DSP 快速判断该流量是否匹配投放策略，通过机器学习模型预测广告效果，并计算出价金额。
+
+4. **竞价结算阶段**：Ad Exchange 选出出价最高且符合要求的 DSP，将其广告素材和监测代码传递给媒体。
+
+5. **广告展示阶段**：媒体将广告渲染给用户，并实时上报曝光、点击等行为数据。
+
+6. **监测与优化阶段**：DSP 持续收集投放数据，基于 ROI、eCPM 等指标自动优化出价和定向策略，形成投放闭环。
+
+### 虚拟广告位的本质
+
+值得注意的是，广告主购买的并非固定的物理广告位，而是基于**人群、时段、设备等维度组合的虚拟流量包**。DSP 通过程序化能力将这些离散的曝光机会打包成符合投放目标的"虚拟广告位"，这也是程序化广告区别于传统媒体采购的核心特征。
+
 ## 参考
 
 - [ 系统设计 ｜ 一文了解现代广告系统的逻辑](https://mp.weixin.qq.com/s/JSZPPUg10aGAt12ZZ5kzeQ)

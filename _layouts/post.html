@@ -43,3 +43,44 @@ layout: default
     async
 ></script>
 <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  
+  // 将 language-mermaid 代码块转换为 mermaid 可识别的格式
+  document.addEventListener('DOMContentLoaded', function() {
+    // 查找所有 language-mermaid 代码块
+    document.querySelectorAll('code.language-mermaid').forEach(function(codeBlock) {
+      // 获取父元素 pre
+      const pre = codeBlock.parentElement;
+      // 创建新的 div 元素
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = codeBlock.textContent;
+      // 替换 pre 元素
+      pre.parentElement.replaceChild(div, pre);
+    });
+    
+    // 初始化 Mermaid
+    mermaid.initialize({ 
+      startOnLoad: true,
+      theme: 'default',
+      securityLevel: 'loose',
+      sequence: {
+        diagramMarginX: 50,
+        diagramMarginY: 10,
+        actorMargin: 50,
+        width: 150,
+        height: 65,
+        boxMargin: 10,
+        boxTextMargin: 5,
+        noteMargin: 10,
+        messageMargin: 35,
+        mirrorActors: true,
+        useMaxWidth: true
+      }
+    });
+    
+    // 手动渲染所有 mermaid 图表
+    mermaid.run();
+  });
+</script>
