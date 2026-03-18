@@ -55,7 +55,9 @@ customCommands:
   - key: 'C'
     context: 'files'
     description: 'Generate commit message with Claude Code'
-    command: 'sh -c "git diff --staged | /Users/momo/.local/bin/claude -p \"Generate a concise git commit message for these staged changes. Output ONLY the raw commit message with no markdown, no code blocks, no backticks, no explanations. Use conventional commit format.\" --model haiku --output-format text > /tmp/commit_msg && git commit -F /tmp/commit_msg"'
+    command: >-
+      sh -c "git diff --staged --quiet && echo 'No staged changes' ||
+      (git diff --staged | ~/.local/bin/claude -p 'Generate a concise git commit message for these staged changes. Output ONLY the raw commit message with no markdown, no code blocks, no backticks, no explanations. Use conventional commit format.' --model sonnet --output-format text > /tmp/commit_msg && git commit -F /tmp/commit_msg)"
     output: 'terminal'
 ```
 
@@ -72,16 +74,18 @@ customCommands:
 ### 命令详解
 
 ```bash
-git diff --staged | /Users/momo/.local/bin/claude -p "Generate a concise git commit message for these staged changes. Output ONLY the raw commit message with no markdown, no code blocks, no backticks, no explanations. Use conventional commit format." --model haiku --output-format text > /tmp/commit_msg && git commit -F /tmp/commit_msg
+sh -c "git diff --staged --quiet && echo 'No staged changes' ||
+(git diff --staged | ~/.local/bin/claude -p 'Generate a concise git commit message for these staged changes. Output ONLY the raw commit message with no markdown, no code blocks, no backticks, no explanations. Use conventional commit format.' --model sonnet --output-format text > /tmp/commit_msg && git commit -F /tmp/commit_msg)"
 ```
 
 各部分作用：
-1. `git diff --staged` - 获取已暂存文件的 diff
-2. `claude -p "..."` - 将 diff 传给 Claude Code 生成 commit 消息
-3. `--model haiku` - 使用 haiku 模型（快速且免费）
-4. `--output-format text` - 输出纯文本格式
-5. `> /tmp/commit_msg` - 将结果保存到临时文件
-6. `git commit -F /tmp/commit_msg` - 使用文件内容作为 commit 消息完成提交
+1. `git diff --staged --quiet && echo 'No staged changes'` - 检查是否有已暂存的更改，无则直接提示不再往下执行
+2. `(git diff --staged | ...)` - 有暂存更改时，将 diff 传给 Claude Code 生成 commit 消息
+3. `~/.local/bin/claude -p "..."` - 将 diff 传给 Claude Code 生成 commit 消息
+4. `--model sonnet` - 使用 sonnet 模型
+5. `--output-format text` - 输出纯文本格式
+6. `> /tmp/commit_msg` - 将结果保存到临时文件
+7. `git commit -F /tmp/commit_msg` - 使用文件内容作为 commit 消息完成提交
 
 ### 第三步：使用方式
 
@@ -90,21 +94,23 @@ git diff --staged | /Users/momo/.local/bin/claude -p "Generate a concise git com
 3. 等待 Claude Code 分析代码变更并生成消息
 4. 命令会自动执行 `git commit`
 
-如果你使用的是通用 `claude` 命令而不是绝对路径，需要确保 `claude` 在你的 PATH 中：
+如果你使用的是绝对路径而不是 `~/.local/bin/claude`，需要先确认 `claude` 命令的位置：
 
 ```bash
 # 检查 claude 命令位置
 which claude
-
-# 或者使用 Homebrew 安装的路径
-/usr/local/bin/claude
 ```
+
+常见路径包括：
+- `~/.local/bin/claude`
+- `/usr/local/bin/claude`
+- Homebrew 安装路径
 
 ## 注意事项
 
-1. **Claude Code 安装路径**：上述配置使用了绝对路径 `/Users/momo/.local/bin/claude`，你需要根据实际安装位置修改
-2. **模型选择**：使用了 `--model haiku`，这是最快且免费的模型。如果需要更高质量的消息，可以改为 `sonnet` 或 `opus`
-3. **Diff 范围**：上述配置使用 `--staged`，只会包含已暂存的更改
+1. **Claude Code 安装路径**：配置使用了路径别名 `~/.local/bin/claude`，确保该路径在你的 `PATH` 中或替换为实际绝对路径
+2. **模型选择**：默认使用 sonnet 模型。如需更快响应可改为 `--model haiku`，如需最高质量可改为 `--model opus`
+3. **暂存检查**：命令会先检查是否有已暂存的更改，无则提示 "No staged changes" 而不会报错
 
 ## 常见问题
 
