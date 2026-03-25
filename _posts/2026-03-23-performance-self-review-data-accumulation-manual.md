@@ -2,8 +2,8 @@
 layout: post
 title: "绩效自评数据积累手册"
 date: 2026-03-23
-category: 职场技能
-tags: [绩效, 自评, 职场, 素材积累]
+category: 职场
+tags: [绩效自评, 向上管理, 职场技能, 素材积累]
 ---
 
 ## 核心问题
