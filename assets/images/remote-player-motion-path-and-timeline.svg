@@ -1,0 +1,84 @@
+<svg width="980" height="1180" viewBox="0 0 980 1180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font: 700 40px 'Helvetica Neue', Arial, sans-serif; fill: #111827; }
+      .subtitle { font: 700 28px 'Helvetica Neue', Arial, sans-serif; fill: #1f2937; }
+      .body { font: 400 21px 'Helvetica Neue', Arial, sans-serif; fill: #4b5563; }
+      .mono { font: 500 24px 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace; fill: #111827; }
+      .small { font: 400 18px 'Helvetica Neue', Arial, sans-serif; fill: #6b7280; }
+      .panel { fill: #ffffff; stroke: #d1d5db; stroke-width: 2; rx: 18; }
+      .axis { stroke: #9ca3af; stroke-width: 2; }
+      .timeline { stroke: #111827; stroke-width: 3; stroke-linecap: round; }
+      .tick { stroke: #6b7280; stroke-width: 3; }
+      .segmentA { stroke: #2563eb; stroke-width: 10; stroke-linecap: round; }
+      .segmentB { stroke: #059669; stroke-width: 10; stroke-linecap: round; }
+      .segmentC { stroke: #ea580c; stroke-width: 10; stroke-linecap: round; }
+      .point { fill: #111827; }
+      .brace { stroke: #9ca3af; stroke-width: 2; fill: none; }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6b7280" />
+    </marker>
+  </defs>
+
+  <text x="55" y="70" class="title">Remote Motion: Path Segments And Timeline</text>
+  <text x="55" y="110" class="body">Step 1: convert points into segments. Step 2: assign each segment a duration with distance / speed.</text>
+
+  <rect x="50" y="150" width="880" height="430" class="panel" />
+  <text x="85" y="195" class="subtitle">A. Split Path Into Segments</text>
+  <text x="85" y="238" class="mono">P0(0,0) → P1(60,0) → P2(60,40) → P3(120,40)</text>
+
+  <line x1="145" y1="495" x2="145" y2="275" class="axis" marker-end="url(#arrow)" />
+  <line x1="145" y1="495" x2="520" y2="495" class="axis" marker-end="url(#arrow)" />
+  <text x="528" y="503" class="small">x</text>
+  <text x="132" y="268" class="small">y</text>
+
+  <line x1="215" y1="430" x2="360" y2="430" class="segmentA" />
+  <line x1="360" y1="430" x2="360" y2="320" class="segmentB" />
+  <line x1="360" y1="320" x2="505" y2="320" class="segmentC" />
+
+  <circle cx="215" cy="430" r="8" class="point" />
+  <circle cx="360" cy="430" r="8" class="point" />
+  <circle cx="360" cy="320" r="8" class="point" />
+  <circle cx="505" cy="320" r="8" class="point" />
+
+  <text x="196" y="468" class="mono">P0</text>
+  <text x="341" y="468" class="mono">P1</text>
+  <text x="341" y="304" class="mono">P2</text>
+  <text x="486" y="304" class="mono">P3</text>
+
+  <text x="260" y="412" class="mono">S1</text>
+  <text x="378" y="375" class="mono">S2</text>
+  <text x="418" y="302" class="mono">S3</text>
+
+  <text x="85" y="548" class="body">Every segment becomes a time-aware motion unit.</text>
+
+  <rect x="50" y="630" width="880" height="470" class="panel" />
+  <text x="85" y="675" class="subtitle">B. Assign Time To Each Segment</text>
+  <text x="85" y="718" class="mono">speed = 120 px/s</text>
+
+  <text x="85" y="790" class="mono">S1 distance = 60   → duration = 60 / 120 = 0.50s = 500ms</text>
+  <text x="85" y="845" class="mono">S2 distance = 40   → duration = 40 / 120 ≈ 0.33s = 333ms</text>
+  <text x="85" y="900" class="mono">S3 distance = 60   → duration = 60 / 120 = 0.50s = 500ms</text>
+
+  <line x1="140" y1="995" x2="790" y2="995" class="timeline" />
+  <line x1="140" y1="980" x2="140" y2="1010" class="tick" />
+  <line x1="390" y1="980" x2="390" y2="1010" class="tick" />
+  <line x1="555" y1="980" x2="555" y2="1010" class="tick" />
+  <line x1="805" y1="980" x2="805" y2="1010" class="tick" />
+
+  <text x="122" y="1052" class="mono">0ms</text>
+  <text x="348" y="1052" class="mono">500ms</text>
+  <text x="513" y="1052" class="mono">833ms</text>
+  <text x="745" y="1052" class="mono">1333ms</text>
+
+  <path d="M 170 945 C 170 925, 190 925, 190 945 M 190 945 C 190 965, 210 965, 210 945" class="brace" />
+  <path d="M 420 945 C 420 925, 440 925, 440 945 M 440 945 C 440 965, 460 965, 460 945" class="brace" />
+  <path d="M 585 945 C 585 925, 605 925, 605 945 M 605 945 C 605 965, 625 965, 625 945" class="brace" />
+
+  <text x="220" y="945" class="mono">S1</text>
+  <text x="470" y="945" class="mono">S2</text>
+  <text x="635" y="945" class="mono">S3</text>
+
+  <text x="85" y="1090" class="body">Now the path is no longer just a list of points. It becomes a scheduled trajectory.</text>
+</svg>

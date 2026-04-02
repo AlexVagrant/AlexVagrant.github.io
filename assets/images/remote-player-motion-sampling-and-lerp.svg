@@ -1,0 +1,46 @@
+<svg width="980" height="1320" viewBox="0 0 980 1320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font: 700 40px 'Helvetica Neue', Arial, sans-serif; fill: #111827; }
+      .subtitle { font: 700 28px 'Helvetica Neue', Arial, sans-serif; fill: #1f2937; }
+      .body { font: 400 21px 'Helvetica Neue', Arial, sans-serif; fill: #4b5563; }
+      .mono { font: 500 24px 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace; fill: #111827; }
+      .panel { fill: #ffffff; stroke: #d1d5db; stroke-width: 2; rx: 18; }
+      .box { fill: #f9fafb; stroke: #e5e7eb; stroke-width: 2; rx: 14; }
+      .accent { fill: #dc2626; }
+    </style>
+  </defs>
+
+  <text x="55" y="70" class="title">Remote Motion: Sample Position By Time</text>
+  <text x="55" y="110" class="body">Ask “where should I be at this timestamp?” instead of “how far am I from the target?”.</text>
+
+  <rect x="50" y="150" width="880" height="470" class="panel" />
+  <text x="85" y="195" class="subtitle">C. Sample The Current Position</text>
+  <text x="85" y="255" class="mono">Example: now = 650ms</text>
+  <text x="85" y="330" class="mono">S1: 0ms ~ 500ms</text>
+  <text x="85" y="385" class="mono">S2: 500ms ~ 833ms</text>
+  <text x="85" y="440" class="mono">S3: 833ms ~ 1333ms</text>
+
+  <text x="85" y="520" class="mono">progress = (650 - 500) / (833 - 500)</text>
+  <text x="85" y="575" class="mono">         ≈ 150 / 333 ≈ 0.45</text>
+
+  <text x="85" y="655" class="mono">x = 60 + (60 - 60) × 0.45 = 60</text>
+  <text x="85" y="710" class="mono">y =  0 + (40 -  0) × 0.45 ≈ 18</text>
+
+  <circle cx="95" cy="775" r="7" class="accent" />
+  <text x="118" y="785" class="mono">position ≈ (60, 18)</text>
+
+  <rect x="50" y="670" width="880" height="580" class="panel" />
+  <text x="85" y="715" class="subtitle">D. Why It Feels Better Than Lerp</text>
+
+  <rect x="95" y="775" width="770" height="170" class="box" />
+  <text x="125" y="825" class="mono">Lerp Chase</text>
+  <text x="125" y="885" class="mono">delta = remaining × factor</text>
+  <text x="125" y="930" class="body">Far away → faster, near target → slower, feels like chasing.</text>
+
+  <rect x="95" y="985" width="770" height="190" class="box" />
+  <text x="125" y="1035" class="mono">Time-Based Interpolation</text>
+  <text x="125" y="1095" class="mono">position = f(time)</text>
+  <text x="125" y="1140" class="body">Constant speed inside one segment, stable turns at real corners,</text>
+  <text x="125" y="1175" class="body">feels like replaying a path instead of chasing a point.</text>
+</svg>
