@@ -509,6 +509,36 @@ if staleGap && driftTooLarge:
   snapToLatestPoint()
 ```
 
+如果写成一个接近工程实现的简化版本，大致会是这样：
+
+```ts
+function ingestMovePath(points: MovePoint[], receivedAtMs: number) {
+  const latestPoint = points[points.length - 1]
+  const driftToLatest = distance(renderPosition, latestPoint)
+  const queuedEndTimeMs = getQueuedEndTime()
+  const staleGap = queuedEndTimeMs === null
+    || receivedAtMs - queuedEndTimeMs > stalePathThresholdMs
+
+  const shouldHardSnap = staleGap && driftToLatest > hardSnapDistance
+
+  if (shouldHardSnap) {
+    resetMotion(latestPoint, receivedAtMs)
+    return
+  }
+
+  enqueuePath(points, receivedAtMs + interpolationDelayMs)
+}
+```
+
+这里有两个实现细节值得点明：
+
+- `staleGap` 看的是“这包消息到达时，当前队列是不是早就播完了”
+- `driftToLatest` 看的是“当前渲染位置离最新权威点是不是已经太远了”
+
+第二阶段协议补上 `offsetMs`、`durationMs` 之后，这条 hard snap 规则本身并没有变化。
+
+变化的是：路径时间轴更真实了，接收端更少需要靠猜测回放旧轨迹，因此真正触发“断档且漂移过大”的概率会比第一阶段更低。
+
 这样做的好处是：
 
 - 正常情况下仍然优先平滑播放
