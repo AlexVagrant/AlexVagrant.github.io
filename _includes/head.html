@@ -4,6 +4,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- Mermaid diagram support -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      flowchart: { useMaxWidth: true, htmlLabels: true },
+      securityLevel: 'loose'
+    });
+  </script>
+
   <title>
     {%- if page.title -%}
       {{ page.title }}

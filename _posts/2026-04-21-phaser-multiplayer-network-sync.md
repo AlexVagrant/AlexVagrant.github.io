@@ -10,6 +10,21 @@ tags: [Phaser, Game Development, Network Sync, Multiplayer]
 
 <!-- more -->
 
+## 零、整体架构
+
+<div class="mermaid">
+sequenceDiagram
+    participant C1 as 本地客户端
+    participant S as 服务器
+    participant C2 as 其他客户端
+
+    Note over C1: 玩家操作 → 输入处理
+    C1->>S: 上报移动路径 (USER_MOVE_UP)
+    S->>C2: 广播所有玩家移动 (USER_MOVE_DOWN)
+    Note over C2: 接收 → 规范化 → 状态机处理
+    C2->>C2: 每帧渲染插值后的位置
+</div>
+
 ## 一、IM 上下行数据结构
 
 ### 1.1 上行：客户端上报自身移动
@@ -197,19 +212,28 @@ interface IOtherPlayerMotionState {
 
 ### 2.2 状态机分层
 
-```
-┌─────────────────────────────────────────────────────┐
-│                 运动状态机分层                        │
-├─────────────────────────────────────────────────────┤
-│  Replay Path Layer (优先级高)                        │
-│  - 场景：服务器下发 V2 协议路径（带时间戳）            │
-│  - 行为：按预定时间表精确播放，不依赖网络实时数据      │
-├─────────────────────────────────────────────────────┤
-│  Snapshot Interpolation Layer (降级方案)             │
-│  - 场景：V1 协议或 V2 但时间戳无效                    │
-│  - 行为：通过插值重建"已知的过去"，外推"未知的未来"    │
-└─────────────────────────────────────────────────────┘
-```
+<div class="mermaid">
+flowchart TB
+    subgraph 优先级高
+        R1[V2 协议时间戳有效] --> R2[Replay Path 模式]
+        R2 --> R3[按预定时间表精确播放]
+        R3 --> R4[不依赖后续网络数据]
+    end
+
+    subgraph 降级方案
+        S1[V1 协议 或 时间戳无效] --> S2[Snapshot Interpolation 模式]
+        S2 --> S3[插值重建已知的过去]
+        S3 --> S4[外推未知的未来]
+    end
+
+    style R2 fill:#74c0fc
+    style S2 fill:#ffd43b
+</div>
+
+| 层级 | 触发条件 | 行为特点 |
+|------|----------|----------|
+| **Replay Path** | V2 协议时间戳有效 | 精确可控，服务器下发完整时间表 |
+| **Snapshot 插值** | V1 协议或时间戳无效 | 平滑降级，依赖历史数据外推 |
 
 ## 三、Replay Path：精确播放已知路径
 
@@ -342,6 +366,35 @@ function enqueuePath(state: IOtherPlayerMotionState, path: IScheduledMotionPath)
 
 插值的核心思想：**不要渲染"现在"的位置，而是渲染"稍早"的位置**。
 
+<svg viewBox="0 0 500 120" xmlns="http://www.w3.org/2000/svg">
+  <text x="250" y="15" text-anchor="middle" font-size="12" font-weight="bold">插值延迟时间线 (150ms)</text>
+  <line x1="30" y1="80" x2="470" y2="80" stroke="#333" stroke-width="2"/>
+  <text x="30" y="95" font-size="10">0ms</text>
+  <text x="155" y="95" font-size="10">150ms</text>
+  <text x="305" y="95" font-size="10">300ms</text>
+  <text x="455" y="95" font-size="10">450ms</text>
+  <rect x="30" y="55" width="16" height="16" fill="#69db7c" rx="2"/>
+  <text x="38" y="80" font-size="8" text-anchor="middle" fill="#69db7c">P1</text>
+  <rect x="150" y="55" width="16" height="16" fill="#69db7c" rx="2"/>
+  <text x="158" y="80" font-size="8" text-anchor="middle" fill="#69db7c">P2</text>
+  <rect x="300" y="55" width="16" height="16" fill="#69db7c" rx="2"/>
+  <text x="308" y="80" font-size="8" text-anchor="middle" fill="#69db7c">P3</text>
+  <rect x="450" y="55" width="16" height="16" fill="#69db7c" rx="2"/>
+  <text x="458" y="80" font-size="8" text-anchor="middle" fill="#69db7c">P4</text>
+  <line x1="200" y1="30" x2="200" y2="70" stroke="#4dabf7" stroke-width="2"/>
+  <polygon points="200,25 193,35 207,35" fill="#4dabf7"/>
+  <text x="200" y="18" text-anchor="middle" font-size="9" fill="#4dabf7">渲染时刻 T=0</text>
+  <line x1="50" y1="35" x2="50" y2="65" stroke="#4dabf7" stroke-width="2" stroke-dasharray="4,2"/>
+  <text x="50" y="28" text-anchor="middle" font-size="8" fill="#4dabf7">renderTime</text>
+  <text x="50" y="40" text-anchor="middle" font-size="8" fill="#4dabf7">(now-150ms)</text>
+  <rect x="30" y="50" width="150" height="25" fill="#4dabf7" fill-opacity="0.15"/>
+  <text x="105" y="100" text-anchor="middle" font-size="9" fill="#555">缓冲窗口 (P1 等待 P2 到达)</text>
+  <text x="250" y="115" text-anchor="middle" font-size="9" fill="#666">渲染时刻 T=0 实际渲染的是 150ms 前的数据，确保下一个包已到达</text>
+</svg>
+
+
+> 上图展示了 150ms 插值延迟的效果：渲染时刻 (T=0) 实际渲染的是 150ms 前的位置数据，这样总能保留一个"缓冲窗口"等待下一个数据包的到来。
+
 ```typescript
 // 渲染时间 = 当前时间 - 插值延迟
 const renderTimeMs = nowMs - config.interpolationDelayMs
@@ -372,6 +425,34 @@ function interpolateSegment(
 ```
 
 ### 4.3 快照采样
+
+<div class="mermaid">
+graph LR
+    subgraph 写入端
+        A1[服务器广播] --> A2[新快照]
+        A2 --> A3[appendSnapshots]
+        A3 --> A4[快照缓冲区]
+    end
+
+    subgraph 读取端
+        B1[renderTime] --> B2[查找相邻快照]
+        B4[快照1] --> B2
+        B5[快照2] --> B2
+        B6[快照N] --> B2
+        B2 --> B3{在两者之间?}
+        B3 -->|是| B7[线性插值]
+        B3 -->|否| B8[外推]
+    end
+
+    A4 -.-> B4
+    A4 -.-> B5
+    A4 -.-> B6
+
+    style B8 fill:#ffd43b
+    style B7 fill:#69db7c
+</div>
+
+> **读写分离**：写入端（服务器数据）append 到缓冲区；读取端（渲染时）从缓冲区中查找最近的两个快照进行插值。
 
 ```typescript
 interface MotionConfig {
@@ -494,6 +575,24 @@ function pruneSnapshots(
 ```
 
 ## 五、Hard Snap：漂移过大时的紧急修正
+
+<div class="mermaid">
+flowchart TD
+    A[收到服务器位置数据] --> B{距离是否过大?}
+    B -->|是| C{时间是否超过阈值?}
+    C -->|是| D[触发 Hard Snap<br/>硬切换到权威位置]
+    C -->|否| E[等待或小幅度插值]
+    B -->|否| F{时间是否超过阈值?}
+    F -->|是| G[触发 Hard Snap]
+    F -->|否| H[继续当前插值策略]
+
+    style D fill:#ff6b6b,color:#fff
+    style G fill:#ff6b6b,color:#fff
+    style H fill:#69db7c
+    style E fill:#ffd43b
+</div>
+
+> **何时触发 Hard Snap**：当"漂移距离过大"**且**"数据过期"同时满足时，才触发硬切换。否则平滑优先。
 
 即使有插值和外推，如果客户端状态和服务器权威位置差距过大（比如玩家快速移动、或网络长时间中断），平滑过渡反而会让误差更明显。这时需要"硬切换"。
 
@@ -731,37 +830,143 @@ const OTHER_PLAYER_MOTION_CONFIG = {
 
 ## 八、整体流程图
 
-```
-服务器广播玩家移动数据 (USER_MOVE_DOWN)
-           │
-           ▼
-┌─────────────────────────────────────────────────┐
-│  normalizeUserMoveDownMessage                    │
-│  - 解析 V1/V2 协议                               │
-│  - 统一为 INormalizedMovePoint[]                │
-│  - 检测 seq 去重                                 │
-└────────────────────┬────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────┐
-│  ingestOtherPlayerMovePath                       │
-│  ├─ shouldHardSnap？ → performHardSnap          │
-│  ├─ !allowHardSnap？ → buildScheduledMotionPath │
-│  ├─ hasTimedOffsets？ → buildTimedSnapshots     │
-│  └─ 否则 → buildScheduledMotionPath            │
-└────────────────────┬────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────┐
-│  advanceOtherPlayerMotion (每帧调用)             │
-│  ├─ sampleReplayPath (Replay Path 优先)         │
-│  ├─ sampleSnapshotsWithBuffer (插值降级)        │
-│  └─ extrapolateFromVelocity (外推超界)          │
-└────────────────────┬────────────────────────────┘
-                     │
-                     ▼
-              渲染角色于 renderPosition
-```
+<div class="mermaid">
+sequenceDiagram
+    participant S as 服务器广播
+    participant N as 数据规范化
+    participant H as 状态机
+    participant R as 每帧渲染
+
+    S->>N: USER_MOVE_DOWN
+    N->>N: V2 保留时间戳 / V1 平均分配
+    N->>N: seq 去重检查
+    N->>H: 有效数据进入状态机
+
+    H->>H: Hard Snap?
+    H-->>R: 是 → performHardSnap 硬切换
+
+    alt V2 + allowHardSnap
+        H->>R: buildTimedSnapshots 时间驱动快照
+    end
+
+    alt V1 或 allowHardSnap=false
+        H->>R: buildScheduledMotionPath 速度驱动路径
+    end
+
+    R->>R: 有 activeReplayPath?
+    R->>R: sampleReplayPath / 快照插值
+    R->>R: 计算 isMoving → 更新 renderPosition
+</div>
+
+### 关键数据流 SVG 示意图
+
+#### 1. 插值延迟原理
+
+<svg viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
+  <line x1="50" y1="150" x2="550" y2="150" stroke="#333" stroke-width="2"/>
+  <text x="50" y="170" font-size="12">0ms</text>
+  <text x="150" y="170" font-size="12">150ms</text>
+  <text x="300" y="170" font-size="12">300ms</text>
+  <text x="450" y="170" font-size="12">450ms</text>
+  <text x="530" y="170" font-size="12">时间→</text>
+  <polygon points="300,60 290,80 310,80" fill="#4dabf7"/>
+  <text x="300" y="50" text-anchor="middle" font-size="11" fill="#4dabf7">渲染时刻 T=0</text>
+  <line x1="150" y1="90" x2="150" y2="140" stroke="#4dabf7" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="155" y="85" font-size="10" fill="#4dabf7">renderTime</text>
+  <text x="155" y="97" font-size="10" fill="#4dabf7">= now - 150ms</text>
+  <rect x="50" y="110" width="20" height="20" fill="#69db7c"/>
+  <text x="60" y="135" text-anchor="middle" font-size="9">P1</text>
+  <rect x="200" y="110" width="20" height="20" fill="#69db7c"/>
+  <text x="210" y="135" text-anchor="middle" font-size="9">P2</text>
+  <rect x="350" y="110" width="20" height="20" fill="#69db7c"/>
+  <text x="360" y="135" text-anchor="middle" font-size="9">P3</text>
+  <rect x="480" y="110" width="20" height="20" fill="#69db7c"/>
+  <text x="490" y="135" text-anchor="middle" font-size="9">P4</text>
+  <rect x="50" y="110" width="100" height="20" fill="#69db7c" fill-opacity="0.2"/>
+  <text x="100" y="145" text-anchor="middle" font-size="9" fill="#555">缓冲窗口 150ms</text>
+  <text x="300" y="190" text-anchor="middle" font-size="11" fill="#666">渲染时刻 T=0 渲染的是 150ms 前的数据，确保包到达后再渲染</text>
+</svg>
+
+#### 2. 快照缓冲区读写
+
+<svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg">
+  <text x="300" y="20" text-anchor="middle" font-size="14" font-weight="bold">快照缓冲区 (Snapshots)</text>
+  <rect x="30" y="40" width="120" height="100" rx="5" fill="#e7f5ff" stroke="#4dabf7" stroke-width="2"/>
+  <text x="90" y="60" text-anchor="middle" font-size="11" font-weight="bold" fill="#4dabf7">写入端</text>
+  <text x="90" y="80" text-anchor="middle" font-size="10">服务器广播</text>
+  <text x="90" y="95" text-anchor="middle" font-size="10">↓</text>
+  <text x="90" y="110" text-anchor="middle" font-size="10">appendSnapshots</text>
+  <text x="90" y="125" text-anchor="middle" font-size="10">↓</text>
+  <text x="90" y="140" text-anchor="middle" font-size="10">写入缓冲区</text>
+  <line x1="150" y1="90" x2="200" y2="90" stroke="#69db7c" stroke-width="2"/>
+  <polygon points="200,90 195,85 195,95" fill="#69db7c"/>
+  <text x="175" y="80" text-anchor="middle" font-size="9" fill="#69db7c">新快照</text>
+  <rect x="210" y="40" width="180" height="200" rx="5" fill="#f3f0ff" stroke="#9775fa" stroke-width="2"/>
+  <text x="300" y="60" text-anchor="middle" font-size="11" font-weight="bold" fill="#9775fa">快照数组 snapshots[]</text>
+  <rect x="230" y="75" width="60" height="30" rx="3" fill="#fff" stroke="#9775fa"/>
+  <text x="260" y="93" text-anchor="middle" font-size="9">{x,y,t}</text>
+  <text x="260" y="105" text-anchor="middle" font-size="8" fill="#888">snapshot[0]</text>
+  <rect x="230" y="115" width="60" height="30" rx="3" fill="#fff" stroke="#9775fa"/>
+  <text x="260" y="133" text-anchor="middle" font-size="9">{x,y,t}</text>
+  <text x="260" y="145" text-anchor="middle" font-size="8" fill="#888">snapshot[1]</text>
+  <rect x="230" y="155" width="60" height="30" rx="3" fill="#fff" stroke="#9775fa"/>
+  <text x="260" y="173" text-anchor="middle" font-size="9">{x,y,t}</text>
+  <text x="260" y="185" text-anchor="middle" font-size="8" fill="#888">snapshot[2]</text>
+  <rect x="230" y="195" width="60" height="30" rx="3" fill="#fff" stroke="#9775fa"/>
+  <text x="260" y="213" text-anchor="middle" font-size="9">{x,y,t}</text>
+  <text x="260" y="225" text-anchor="middle" font-size="8" fill="#888">...</text>
+  <line x1="390" y1="90" x2="440" y2="90" stroke="#f59f00" stroke-width="2"/>
+  <polygon points="440,90 435,85 435,95" fill="#f59f00"/>
+  <text x="415" y="80" text-anchor="middle" font-size="9" fill="#f59f00">renderTime 查询</text>
+  <rect x="450" y="40" width="120" height="100" rx="5" fill="#fff9db" stroke="#fab005" stroke-width="2"/>
+  <text x="510" y="60" text-anchor="middle" font-size="11" font-weight="bold" fill="#fab005">读取端</text>
+  <text x="510" y="80" text-anchor="middle" font-size="10">查找相邻快照</text>
+  <text x="510" y="95" text-anchor="middle" font-size="10">↓</text>
+  <text x="510" y="110" text-anchor="middle" font-size="10">线性插值</text>
+  <text x="510" y="125" text-anchor="middle" font-size="10">或外推</text>
+  <rect x="30" y="180" width="120" height="60" rx="5" fill="#e7f5ff"/>
+  <text x="90" y="200" text-anchor="middle" font-size="9" fill="#4dabf7">写入规则</text>
+  <text x="90" y="215" text-anchor="middle" font-size="8">新数据 push_back</text>
+  <text x="90" y="228" text-anchor="middle" font-size="8">超过 retention 清理</text>
+  <rect x="450" y="180" width="120" height="60" rx="5" fill="#fff9db"/>
+  <text x="510" y="200" text-anchor="middle" font-size="9" fill="#fab005">读取规则</text>
+  <text x="510" y="215" text-anchor="middle" font-size="8">renderTime - delay</text>
+  <text x="510" y="228" text-anchor="middle" font-size="8">找相邻点插值</text>
+  <line x1="300" y1="250" x2="300" y2="265" stroke="#333" stroke-width="1"/>
+  <text x="300" y="280" text-anchor="middle" font-size="10">渲染位置 = lerp(snapshot[i], snapshot[i+1], progress)</text>
+</svg>
+
+#### 3. Replay Path 队列
+
+<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+  <text x="300" y="20" text-anchor="middle" font-size="14" font-weight="bold">Replay Path 队列机制</text>
+  <rect x="30" y="40" width="150" height="80" rx="5" fill="#c3e6cb" stroke="#28a745" stroke-width="2"/>
+  <text x="105" y="60" text-anchor="middle" font-size="11" font-weight="bold" fill="#28a745">activeReplayPath</text>
+  <text x="105" y="80" text-anchor="middle" font-size="9">当前正在播放</text>
+  <text x="105" y="95" text-anchor="middle" font-size="10">segments[]</text>
+  <text x="105" y="110" text-anchor="middle" font-size="8" fill="#666">endTimeMs, endPoint</text>
+  <line x1="180" y1="80" x2="220" y2="80" stroke="#333" stroke-width="2"/>
+  <polygon points="220,80 215,75 215,85" fill="#333"/>
+  <rect x="230" y="40" width="150" height="120" rx="5" fill="#fff3cd" stroke="#ffc107" stroke-width="2"/>
+  <text x="305" y="60" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffc107">bufferedReplayPaths[]</text>
+  <text x="305" y="78" text-anchor="middle" font-size="9">排队等待</text>
+  <rect x="245" y="90" width="120" height="25" rx="3" fill="#fff" stroke="#ffc107"/>
+  <text x="305" y="107" text-anchor="middle" font-size="9">path[0]</text>
+  <rect x="245" y="120" width="120" height="25" rx="3" fill="#fff" stroke="#ffc107"/>
+  <text x="305" y="137" text-anchor="middle" font-size="9">path[1]</text>
+  <line x1="305" y1="165" x2="305" y2="190" stroke="#28a745" stroke-width="2" stroke-dasharray="4,2"/>
+  <polygon points="305,190 300,185 310,185" fill="#28a745"/>
+  <text x="330" y="180" font-size="9" fill="#28a745">播放完弹出下一个</text>
+  <text x="450" y="60" font-size="10" fill="#666">enqueuePath:</text>
+  <text x="450" y="78" font-size="9">if (active 为空)</text>
+  <text x="450" y="93" font-size="9">  → 直接播放</text>
+  <text x="450" y="108" font-size="9">else</text>
+  <text x="450" y="123" font-size="9">  → push 到队列</text>
+  <text x="450" y="150" font-size="10" fill="#666">promote:</text>
+  <text x="450" y="168" font-size="9">active 播放完</text>
+  <text x="450" y="183" font-size="9">→ shift() 下一个</text>
+</svg>
+
 
 ## 九、实际使用示例
 
