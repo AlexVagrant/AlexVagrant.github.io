@@ -121,11 +121,12 @@ set grepprg=grep\ -nH\ $*
 [ripgrep](https://github.com/BurntSushi/ripgrep) 比系统 grep 快得多，`--vimgrep` 让输出直接兼容 Vim quickfix：
 
 ```vim
+" 添加到 ~/.vimrc
 set grepprg=rg\ --vimgrep\ --smart-case
 set grepformat=%f:%l:%c:%m
 ```
 
-之后 `:grep` 就会自动用 ripgrep。
+这两行需要写在 `~/.vimrc` 中，之后 `:grep` 就会自动用 ripgrep。
 
 ## 五、结果导航
 
@@ -147,6 +148,53 @@ n / N           " 下一个 / 上一个匹配
 *               " 搜索光标下的单词（向下）
 #               " 搜索光标下的单词（向上）
 :g/pattern/p    " 打印所有匹配行
+```
+
+## 七、常见误区
+
+### 1. 用 vim 搜索写法去写 grep
+
+vim 里 `/pattern/` 的 `/` 是搜索模式分隔符，但 `:grep` 会把它当作**字面字符**去匹配。也就是说：
+
+```vim
+" 错误 — grep 在文件里找 "/priorityOrder/"（带斜杠的字面量）
+:grep /priorityOrder/ src/**
+
+" 正确 — grep 只匹配 priorityOrder
+:grep priorityOrder src/**
+```
+
+`vimgrep` 用 `/pattern/` 语法没错，因为它内建了 vim 的正则解析；`grep` 是外部命令，不是你写什么它都认得。从 `vimgrep` 切到 `:grep` 时最容易犯这个错。
+
+### 2. `**` 递归 glob 需要 shell 配合
+
+Bash 默认**不**启用 `**` 递归匹配，需要先开 `globstar`：
+
+```bash
+shopt -s globstar          # 启用 **
+grep -rn priorityOrder src/**
+```
+
+如果不开启，`**` 只会匹配当前层级，不会递归子目录。
+
+更稳妥的做法是直接用 `grep` 自带的 `-r` 遍历目录，不依赖 shell glob：
+
+```bash
+grep -rn priorityOrder src/
+```
+
+或者用 `--include` 过滤文件类型：
+
+```bash
+grep -rn priorityOrder src/ --include='*.js'
+```
+
+### 3. 想让 grep 结果直接弹出 copen？
+
+`:grep` 只会把结果填入 quickfix 列表，不会自动打开窗口。加 `| copen` 就行：
+
+```vim
+:grep priorityOrder src/** | copen
 ```
 
 
