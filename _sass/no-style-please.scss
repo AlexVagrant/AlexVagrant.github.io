@@ -101,11 +101,21 @@ img {
 
 // ---------- Homepage & post list ---------- //
 
-header h1 {
+.site-header {
+  margin-bottom: 2.5rem;
+}
+
+.site-header h1 {
   font-size: 2.2rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.site-description {
+  color: #888;
+  font-size: 1rem;
+  margin: 0;
 }
 
 .menu > ul {
@@ -125,6 +135,13 @@ header h1 {
   margin-left: 0.5rem;
 }
 
+.post-excerpt {
+  margin: 0.2rem 0 0.6rem 7em;
+  color: #888;
+  font-size: 0.85em;
+  line-height: 1.5;
+}
+
 // Post list items: more breathing room
 .post-list li,
 ul:not(.menu ul) > li {
@@ -137,14 +154,32 @@ ul:not(.menu ul) > li {
   margin: 0.25rem 0 1rem;
 }
 
-// Category / tag list in menu
+// Category / tag list in menu — compact pills
 .category-list,
 .tag-list {
   padding-left: 0;
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.3rem 0.8rem;
+  gap: 0.4rem;
+}
+
+.category li a,
+.category-list li a,
+.tag-list li a {
+  display: inline-block;
+  padding: 0.15em 0.6em;
+  border-radius: 4px;
+  background: #f3f3f3;
+  color: #666;
+  font-size: 0.85em;
+}
+
+.category li a:hover,
+.category-list li a:hover,
+.tag-list li a:hover {
+  background: #e0e0e0;
+  color: #333;
 }
 
 // ---------- Article ---------- //
