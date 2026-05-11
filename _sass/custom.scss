@@ -5,7 +5,10 @@
   font-family: 'JetBrains Mono';
   font-style: normal;
   font-weight: 400;
-  src: url('/assets/fonts/JetBrainsMono-Regular.ttf'); /* Legacy iOS */
+  font-display: swap;
+  src: url('/assets/fonts/jetbrains-mono-v18-latin-regular.woff2') format('woff2'),
+       url('/assets/fonts/jetbrains-mono-v18-latin-regular.woff') format('woff'),
+       url('/assets/fonts/JetBrainsMono-Regular.ttf') format('truetype');
 }
 
 /* 使用 CDN 托管的 LXGWWenKai 字体，避免加载大型本地字体文件 */
@@ -25,7 +28,7 @@ a:hover {
 
 code {
   /* 更改code字体 */
-  font-family: 'JetBrains Mono', Times, Menlo, Monaco, Consolas, Andale Mono, lucida console, Courier New, monospace;
+  font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Andale Mono', 'Lucida Console', 'Courier New', monospace;
   font-size: 0.9rem;
 }
 

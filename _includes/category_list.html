@@ -1,14 +1,11 @@
 <ul class="category">
-	{% assign max_display = 8 %}
-	{% assign count = 0 %}
 	{% for category in site.categories %}
-		{% assign count = count | plus: 1 %}
-		{% if count <= max_display %}
-			{% assign category_slug = category | first %}
-			{% assign no_of_posts = category | last | size %}
-			<li>
-				<a href="{{ 'category/' | relative_url }}{{ category_slug }}" title="See all posts by {{ category_slug }} category">{{ category_slug }}</a>
-			</li>
-		{% endif %}
+
+	{% assign category_slug = category | first %}
+	{% assign no_of_posts = category | last | size %}
+
+	<li>
+		<a href="{{ 'category/' | relative_url }}{{ category_slug }}" title="查看 {{ category_slug }} 分类下的所有文章">{{ category_slug }}</a>
+	</li>
 	{% endfor %}
 </ul>
