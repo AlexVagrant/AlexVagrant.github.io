@@ -13,7 +13,6 @@ entries:
       show_more: true
       show_more_text: See archive...
       show_more_url: archive.html
-      show_excerpts: true
 
   - title: posts by category
     category_list: true

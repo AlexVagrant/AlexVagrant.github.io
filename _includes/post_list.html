@@ -16,9 +16,6 @@
         <li>
           <span class="post-date">{{- post.date | date: site.theme_config.date_format -}}</span>
           <a class="post-title" href="{{ post.url | relative_url }}">{{ post.title }}</a>
-          {%- if include.show_excerpts and post.excerpt -%}
-            <p class="post-excerpt">{{ post.excerpt | strip_html | truncate: 120 }}</p>
-          {%- endif -%}
         </li>
     {%- endfor -%}
     {%- if include.show_more and limit_exceeded -%}
