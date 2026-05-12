@@ -1,85 +1,104 @@
 ---
 layout: post
-title: "ViewModel 模式中的命名规范：resolve、schedule、get 与 pick"
+title: "ViewModel 模块中的命名规范：resolve、schedule、get 与 pick"
 date: 2026-05-12
 category:
 tags: [Architecture, TypeScript, Vue, Naming Conventions]
 ---
 
-在复杂 UI 组件中，ViewModel 模式可以将业务数据与渲染逻辑解耦。但当功能模块逐渐膨胀，如果函数命名没有统一规范，阅读和维护成本会快速增长。本文从实际项目中提炼出一套可复用的命名约定，覆盖纯转换、副作用调度、值提取等常见场景。
+在复杂 UI 模块里，真正让人头疼的，往往不是功能本身，而是“看了函数名还是不知道它会做什么”。有的函数只是组装 View，有的函数会启动定时器，有的函数只是取一个值，但名字却都长得差不多。时间一久，阅读成本和维护成本就会一起上升。
+
+这篇文章想解决的不是“怎么起一个好听的名字”，而是建立一套**能从函数名直接判断职责**的约定。重点只有四类前缀：
+
+- `resolve*`：把输入组织成 View 或其他渲染模型
+- `schedule*`：启动副作用，并返回 cleanup
+- `get*`：提取或计算单个值
+- `pick*`：按优先级从多个候选中择优选择
 
 <!-- more -->
 
-## 一、ViewModel 模式概览
+## 一、先说结论：看到名字，就大致知道行为
 
-核心思路分三层：
-
-1. **定义 View 接口** — 只包含组件渲染需要的数据，不泄漏业务模型细节
-2. **编写 `resolve*View` 函数** — 纯函数，从 domain/store 模型转换到 View 接口
-3. **组件只消费 View** — props 类型依赖 View 接口，不直接依赖原始业务数据
-
-```
-Store / Domain Model
-        │
-        ▼
-  resolveFeatureView()      ← ViewModel（纯函数）
-        │
-        ▼
-  IFeatureView              ← View 接口
-        │
-        ▼
-  Component.vue             ← 只消费 View
-```
-
-好处：转换逻辑可单测、组件职责清晰、同一份 domain 数据可以产出多种 View 变体。
-
-## 二、函数动词前缀：五类标准语义
-
-当一个功能模块包含多个文件时，用一致的动词前缀区分函数职责，让调用方无需阅读实现即可理解行为。
-
-### `resolve*` — 纯转换
-
-纯函数，无副作用，相同输入总是产生相同输出。用于将一种数据形状转换为另一种。
+我希望一段模块代码最终能达到这样一种阅读体验：
 
 ```typescript
-// domain → View
+const view = resolveCheckInBannerView(activity, progress)
+const status = resolveCheckInBannerStatusState(view)
+const width = getCheckInBannerProgressWidth(view.progressRatio)
+const stopRefresh = scheduleCheckInBannerRefresh({ badge: view.badge, refresh })
+const rewards = pickRewards(progress, activity.rewardGroups)
+```
+
+哪怕你还没点进实现，也能先得到几个稳定判断：
+
+- `resolve*` 大概率是纯函数，可以直接读返回值
+- `schedule*` 大概率有副作用，需要考虑生命周期和 cleanup
+- `get*` 大概率只是算一个值，不会重塑大结构
+- `pick*` 大概率存在“优先级”和“兜底链”
+
+这就是这套规范最核心的价值：**降低读代码时的上下文切换成本**。
+
+## 二、四类前缀的边界
+
+为了避免“名字像在分类，实际上还是靠猜”，边界要尽量硬一点。
+
+| 前缀 | 用途 | 典型返回值 | 是否有副作用 |
+|------|------|------------|--------------|
+| `resolve*` | 结构性转换，产出 View / State / Entry | 对象、数组、渲染模型 | 无 |
+| `schedule*` | 启动定时器、订阅、轮询等 | `() => void` | 有 |
+| `get*` | 提取一个值或计算一个派生值 | number、string、boolean、小型数组 | 无 |
+| `pick*` | 从多个候选来源中按优先级选择 | 对象、数组、标量 | 无 |
+
+如果一句话概括这四类边界：
+
+- `resolve*` 关心“把数据组织成什么结构供 UI 消费”
+- `get*` 关心“从现有结构里拿到什么值”
+- `pick*` 关心“多个来源里该选哪个”
+- `schedule*` 关心“副作用什么时候启动、怎么停止”
+
+### 1. `resolve*`：组织渲染模型
+
+`resolve*` 用在“把一种数据形状转换成另一种更适合渲染的数据形状”的场景。
+
+```typescript
 export function resolveFeatureView(
   config: Config,
   data: DomainData | null,
 ): IFeatureView | null { ... }
 
-// View → 子视图（二次 resolve）
 export function resolveFeatureStatusState(
   view: IFeatureView,
 ): IFeatureStatusState { ... }
 
-// 入口：组装顶层列表
 export function resolveFeatureEntries(
-  params: { level: number, data: DomainData | null },
+  params: { level: number; data: DomainData | null },
 ): IFeatureEntry[] { ... }
 ```
 
-特征：
-- 接收数据，返回转换后的结果
-- 不修改参数
-- 不发请求、不启动定时器
-- 可以链式调用（一个 resolve 的输出作为下一个 resolve 的输入）
+它的判断标准不是“返回值一定很复杂”，而是：**这个函数是否在重新组织结构，让下游更容易消费**。
 
-### `schedule*` — 启动副作用并返回清理函数
+所以 `resolveFeatureEntries()` 即使返回数组，也依然属于 `resolve*`。因为它不是简单地“拿一个值”，而是在定义入口结构。
 
-启动定时器、订阅、轮询等副作用，始终返回一个 `() => void` 清理函数。
+`resolve*` 最适合承担这些事情：
+
+- domain/store -> View
+- View -> 子视图状态
+- 多段原始数据 -> 页面入口结构
+
+### 2. `schedule*`：启动副作用，并返回 cleanup
+
+只要函数会启动定时器、订阅、轮询、监听器之类的副作用，我倾向于统一命名成 `schedule*`，并要求它**始终返回 `() => void`**。
 
 ```typescript
-// scheduleFeatureRefresh.ts
 export function scheduleFeatureRefresh({
   deadline,
   refresh,
 }: {
-  deadline: { remainingSeconds: number | null, autoRefresh: boolean }
+  deadline: { remainingSeconds: number | null; autoRefresh: boolean }
   refresh: () => void | Promise<void>
 }): () => void {
   if (!deadline.autoRefresh || deadline.remainingSeconds == null || deadline.remainingSeconds <= 0) {
-    return () => {}  // guard：不需要调度时返回 no-op
+    return () => {}
   }
 
   const timer = globalThis.setTimeout(() => {
@@ -92,220 +111,175 @@ export function scheduleFeatureRefresh({
 }
 ```
 
-```typescript
-// scheduleFeatureCarousel.ts
-export function scheduleFeatureCarousel({
-  itemCount,
-  onTick,
-}: {
-  itemCount: number
-  onTick: () => void
-}): () => void {
-  if (itemCount <= 1) return () => {}
-
-  const timer = globalThis.setInterval(() => {
-    onTick()
-  }, CAROUSEL_INTERVAL)
-
-  return () => {
-    globalThis.clearInterval(timer)
-  }
-}
-```
-
-这个模式的模板非常固定：
-
-```typescript
-function scheduleX(config: {...}): () => void {
-  if (shouldNotSchedule) return () => {}   // guard
-  const timer = globalThis.setXxx(...)     // start
-  return () => { globalThis.clearXxx(timer) }  // cleanup
-}
-```
-
-组件侧消费方式也很统一：
+这个约定的好处是，调用方一看到名字和返回值，就知道应该怎么接：
 
 ```typescript
 let stop = () => {}
 
-watch(() => props.someDep, (dep) => {
-  stop()
-  stop = scheduleFeatureX({ dep, onTick: handleTick })
-}, { immediate: true })
+watch(
+  () => props.someDep,
+  (dep) => {
+    stop()
+    stop = scheduleFeatureX({ dep, refresh })
+  },
+  { immediate: true },
+)
 
 onBeforeUnmount(() => stop())
 ```
 
-### `get*` — 简单取值或计算
+我最看重的是这一点：**函数名把生命周期责任暴露出来了**。调用方不会误以为它只是个普通计算函数。
 
-用于提取、计算、格式化单个值。通常是无副作用、逻辑较轻的纯函数。
+### 3. `get*`：提取一个值，或计算一个派生值
+
+`get*` 适合做值级别的事情，而不是结构级别的事情。
 
 ```typescript
-// 从原始数据中提取并规范化
 function getCollectedCount(progress: Progress | null, key: string): number {
   return normalizeCount(progress?.collected[key])
 }
 
-// 计算派生值
 export function getProgressFillWidth(ratio: number): number {
   const safe = Math.max(0, Math.min(1, ratio))
   return Math.round(MAX_WIDTH * safe)
 }
 
-// 过滤 + 排序的查询
-function getMeaningfulColors(
-  data: DomainData,
-  progress: Progress | null,
-): string[] { ... }
+export function getVisibleRewardNames(rewards: RewardItem[]): string[] {
+  return rewards
+    .filter((reward) => !reward.hidden)
+    .map((reward) => reward.name)
+}
 ```
 
-与 `resolve*` 的区别：`get*` 通常返回标量或简单数组，不返回复杂的 View 对象。`resolve*` 做结构性转换，`get*` 做值级提取。
+这里有一个容易混淆的点：`get*` 不等于“实现必须非常短”。它也可以包含一点过滤、规范化、格式化逻辑。
 
-### `pick*` — 择优选择，带 fallback 链
+真正的区别在于：
 
-当需要从多个候选来源中选择数据，且有明确的优先级和兜底逻辑时使用。
+- `get*` 的输出通常还是“一个值”或“一个很薄的结果”
+- `resolve*` 的输出通常是“一个供后续模块直接消费的结构”
+
+### 4. `pick*`：强调优先级和 fallback 链
+
+`pick*` 不是“另一个名字的 `get*`”，它解决的是另一类问题：**多个候选源之间的选择策略**。
 
 ```typescript
 function pickRewards(
-  data: DomainData,
   progress: Progress | null,
+  rewardGroups: Array<{ level: number; items: RewardItem[] }>,
 ): RewardItem[] {
-  // 优先级 1：进度中携带的奖励
   const progressRewards = progress?.rewardList ?? []
   if (progressRewards.length > 0) return progressRewards
 
-  // 优先级 2：匹配当前层级的奖励
   const currentLevel = progress?.currentLevel
   if (currentLevel != null) {
-    const matched = data.rewardList.find(r => r.level === currentLevel)
+    const matched = rewardGroups.find((group) => group.level === currentLevel)
     if (matched?.items.length) return matched.items
   }
 
-  // 兜底：第一层的奖励
-  return data.rewardList[0]?.items ?? []
+  return rewardGroups[0]?.items ?? []
 }
 ```
 
-`pick*` 与 `get*` 的区别：`pick*` 强调"有优先级的择优过程"，带有明确的 fallback 链。
+如果一个函数的重点在于“从哪里拿”，而且“有明确优先级”，那我会更愿意把它命名成 `pick*`，而不是 `get*`。
 
-### `stop*` — 阻止事件行为
+这样做的好处是，读者会天然预期：
 
-用于事件处理器中阻止默认行为或冒泡。
+- 里面可能有多段 if / fallback
+- 调整业务优先级时，要改这个函数
+- 这个函数的测试重点不是计算公式，而是选择顺序
 
-```typescript
-export function stopFeatureUserClick(event: { stopPropagation: () => void }) {
-  event.stopPropagation()
-}
-```
+## 三、公开函数怎么命名
 
-这类函数通常很短，但单独抽取的好处是：
-- 给阻止行为一个语义化的名字
-- 可以在测试中验证调用
-- 让组件模板中 `@click="stopFeatureUserClick"` 比内联箭头函数更清晰
+公开函数我通常用三段式：
 
-## 三、函数命名全称结构
-
-公开函数遵循三段式命名：
-
-```
+```text
 <动词><模块名><名词>
 ```
 
 例如：
-- `resolveCheckInBannerView` — resolve + 模块名 + View
-- `scheduleCheckInBannerRefresh` — schedule + 模块名 + Refresh
-- `getCheckInBannerProgressWidth` — get + 模块名 + ProgressWidth
 
-模块名中缀让全局搜索（`grep "CheckInBanner"`）可以一次性命中该模块所有公开 API，对于大型项目定位代码非常高效。
+- `resolveCheckInBannerView`
+- `resolveCheckInBannerStatusState`
+- `scheduleCheckInBannerRefresh`
+- `getCheckInBannerProgressWidth`
 
-内部辅助函数可以不包含模块名中缀（如 `normalizeCount`、`parseLabel`），只在与公开函数同一文件内使用。
+这个结构有两个实际好处。
 
-## 四、接口命名
+第一，读名字时就能快速拆出职责：
 
-| 元素 | 约定 | 示例 |
-|------|------|------|
-| 接口前缀 | `I` | `IFeatureView` |
-| View 接口后缀 | `View` | `IFeatureView`、`IFeatureItemView` |
-| 状态接口后缀 | `State` | `IFeatureStatusState` |
-| 入口类型 | `Entry` | `IFeatureEntry` |
-| 常量 | `UPPER_SNAKE_CASE` | `FEATURE_PROGRESS_MAX_WIDTH` |
+- 动词：这个函数做什么
+- 模块名：这个函数属于哪个模块
+- 名词：这个函数产出的是什么
 
-View 类型的子结构用 `*View` 后缀，表明它也是渲染用途的数据：
+第二，对大型项目非常友好。只要搜索模块名中缀，例如 `CheckInBanner`，通常就能一次命中该模块的大部分公开 API。
+
+内部辅助函数则没必要强行带模块名前缀，比如：
+
+- `normalizeCount`
+- `parseLabel`
+- `pickRewards`
+
+前提是它们只在当前文件或当前局部上下文中使用，不打算作为公共入口暴露。
+
+## 四、ViewModel 模块里，哪些东西值得单独拆文件
+
+这部分不是本文的主角，但和命名规范关系很紧，所以简单说一下。
+
+如果一个 UI 模块已经开始出现以下情况：
+
+- 既有 View 组装，又有定时器/轮询
+- 既有主视图，又有多个子状态模型
+- 组件脚本里塞满了计算、选择、watch 和 cleanup
+
+那么可以考虑按职责拆成几个小文件：
+
+```text
+checkInBannerView.ts       # View 接口 + resolveCheckInBannerView
+checkInBannerStatus.ts     # resolveCheckInBannerStatusState
+checkInBannerProgress.ts   # getCheckInBannerProgressWidth
+checkInBannerRefresh.ts    # scheduleCheckInBannerRefresh
+checkInBannerState.ts      # resolveCheckInBannerEntries
+```
+
+注意，这不是说每个功能都应该拆成 5 个文件。**简单组件不要为规范而规范。**
+
+如果一个组件只是展示两三个字段，只有一两个 `computed`，那把逻辑留在组件内部往往更自然。规范应该帮助我们减少复杂度，而不是制造额外复杂度。
+
+## 五、一个更自洽的完整示例
+
+下面用一个“每日签到横幅”模块演示这套命名方式。这个模块有四类需求：
+
+- 把活动数据转换成横幅 View
+- 根据 View 生成状态栏文案
+- 计算进度条宽度
+- 根据徽章信息调度自动刷新
+
+### 1. 主 View：`resolveCheckInBannerView`
 
 ```typescript
-interface IFeatureView {
-  items: IFeatureItemView[]
-  badge: IFeatureBadgeView | null
-}
-```
+import type { ICheckInActivity, ICheckInProgress, IRewardItem } from '@/interfaces/common'
 
-## 五、文件命名
-
-```
-featureView.ts              # View 接口定义 + 主 resolver
-featureStatus.ts            # 状态子视图 resolver
-featureProgress.ts          # 进度计算工具
-featureClick.ts             # 事件处理
-featureTitleRefresh.ts      # 定时刷新调度
-featureCarousel.ts          # 轮播调度
-featureState.ts             # 入口 resolver + 类型汇总
-```
-
-每个文件单一职责，文件名直接对应导出函数的核心名词部分。`*State.ts` 通常作为模块入口，负责聚合子模块并对外暴露统一的入口函数。
-
-## 六、函数分层调用图
-
-```
-featureState.ts           resolveFeatureEntries()       ← 入口
-    │ 调用
-    ▼
-featureView.ts            resolveFeatureView()          ← 核心 ViewModel
-    │ 被消费
-    ├── featureStatus.ts      resolveFeatureStatusState() ← View → 状态 UI 模型
-    ├── featureProgress.ts    getFeatureProgressFillWidth()
-    ├── featureRefresh.ts     scheduleFeatureRefresh()
-    └── featureCarousel.ts    scheduleFeatureCarousel()
-```
-
-组件层只与 `featureState.ts`（入口）交互获取 View，再将 View 分别传给各个 `resolve*` / `schedule*` / `get*` 工具函数驱动渲染和副作用。
-
-## 七、完整使用示例
-
-下面通过一个"每日签到横幅"（Daily Check-in Banner）功能，从头演示如何应用这套规范。需求：在页面顶部展示签到进度条、奖励轮播、倒计时刷新，点击弹出签到弹窗。
-
-### 7.1 第一步：定义 View 接口和主 resolver
-
-`checkInBannerView.ts` — 这是模块的核心文件：
-
-```typescript
-import type { ICheckInProgress, IRewardItem } from '@/interfaces/common'
-
-// View 子结构：签到进度中的每个指标
 export interface ICheckInBannerMetricView {
   label: string
   current: number
   target: number
 }
 
-// View 子结构：标题徽章
 export interface ICheckInBannerBadgeView {
   iconUrl: string
   remainingSeconds: number | null
   autoRefresh: boolean
 }
 
-// 核心 View 接口：组件渲染所需的全部数据
 export interface ICheckInBannerView {
   userName: string
   metrics: ICheckInBannerMetricView[]
-  progressRatio: number       // 0~1
+  progressRatio: number
   statusText: string
   rewards: IRewardItem[]
   badge: ICheckInBannerBadgeView | null
   isCompleted: boolean
 }
-
-// --- 内部辅助函数 ---
 
 function normalizeCount(value: number | string | null | undefined): number {
   const n = Number(value)
@@ -322,21 +296,19 @@ function getTarget(progress: ICheckInProgress | null, key: string): number {
 
 function pickRewards(
   progress: ICheckInProgress | null,
-  fallbackRewards: IRewardItem[],
+  rewardGroups: Array<{ level: number; items: IRewardItem[] }>,
 ): IRewardItem[] {
   const fromProgress = progress?.rewards ?? []
   if (fromProgress.length > 0) return fromProgress
 
   const currentLevel = progress?.currentLevel
   if (currentLevel != null) {
-    const matched = fallbackRewards.find(r => r.level === currentLevel)
+    const matched = rewardGroups.find((group) => group.level === currentLevel)
     if (matched?.items.length) return matched.items
   }
 
-  return fallbackRewards[0]?.items ?? []
+  return rewardGroups[0]?.items ?? []
 }
-
-// --- 公开 API ---
 
 export function resolveCheckInBannerView(
   activity: ICheckInActivity | null,
@@ -344,22 +316,19 @@ export function resolveCheckInBannerView(
 ): ICheckInBannerView | null {
   if (!activity) return null
 
-  const resolved = progress ?? activity.progress ?? null
-  const metricKeys = Object.keys(resolved?.target ?? {})
-    .filter(key => getTarget(resolved, key) > 0)
+  const resolvedProgress = progress ?? activity.progress ?? null
+  const metricKeys = Object.keys(resolvedProgress?.target ?? {})
+    .filter((key) => getTarget(resolvedProgress, key) > 0)
 
-  // 构建指标列表
-  const metrics: ICheckInBannerMetricView[] = metricKeys.map(key => ({
+  const metrics: ICheckInBannerMetricView[] = metricKeys.map((key) => ({
     label: key,
-    current: getCurrent(resolved, key),
-    target: getTarget(resolved, key),
+    current: getCurrent(resolvedProgress, key),
+    target: getTarget(resolvedProgress, key),
   }))
 
-  // 计算进度
-  const total = metricKeys.reduce((sum, k) => sum + getTarget(resolved, k), 0)
-  const done = metricKeys.reduce((sum, k) => sum + getCurrent(resolved, k), 0)
+  const total = metricKeys.reduce((sum, key) => sum + getTarget(resolvedProgress, key), 0)
+  const done = metricKeys.reduce((sum, key) => sum + getCurrent(resolvedProgress, key), 0)
 
-  // 判断状态文案
   const allDone = metricKeys.length > 0 && done >= total
   const hasProgress = done > 0
   const statusText = allDone ? '签到完成' : hasProgress ? '继续加油' : '每日签到领奖励'
@@ -369,25 +338,26 @@ export function resolveCheckInBannerView(
     metrics,
     progressRatio: total > 0 ? Math.min(1, done / total) : 0,
     statusText,
-    rewards: pickRewards(resolved, activity.rewards),
-    badge: activity.badge?.iconUrl ? {
-      iconUrl: activity.badge.iconUrl,
-      remainingSeconds: activity.badge.remainingSeconds,
-      autoRefresh: true,
-    } : null,
+    rewards: pickRewards(resolvedProgress, activity.rewardGroups ?? []),
+    badge: activity.badge?.iconUrl
+      ? {
+          iconUrl: activity.badge.iconUrl,
+          remainingSeconds: activity.badge.remainingSeconds,
+          autoRefresh: true,
+        }
+      : null,
     isCompleted: allDone,
   }
 }
 ```
 
-关键点：
-- `ICheckInBannerView` 只包含渲染所需的数据，不暴露 `ICheckInActivity` 的原始结构
-- 内部辅助函数（`normalizeCount`、`getCurrent`、`pickRewards`）不加模块中缀，因为只在文件内使用
-- `resolveCheckInBannerView` 是唯一的公开导出，组件只需要关心这一个入口
+这个文件里同时出现了 `resolve*`、`get*`、`pick*`，它们的分工是清楚的：
 
-### 7.2 第二步：添加状态子视图
+- `resolveCheckInBannerView` 负责组装完整 View
+- `getCurrent` / `getTarget` 负责值级提取
+- `pickRewards` 负责候选奖励的优先级选择
 
-`checkInBannerStatus.ts` — 对 View 做二次 resolve，产出状态栏渲染模型：
+### 2. 子状态：`resolveCheckInBannerStatusState`
 
 ```typescript
 import type { ICheckInBannerView } from './checkInBannerView'
@@ -406,8 +376,8 @@ export function resolveCheckInBannerStatusState(
   }
 
   const missing = view.metrics
-    .filter(m => m.current < m.target)
-    .map(m => `${m.label} x${m.target - m.current}`)
+    .filter((metric) => metric.current < metric.target)
+    .map((metric) => `${metric.label} x${metric.target - metric.current}`)
 
   if (missing.length === view.metrics.length) {
     return { mode: 'pending', text: '每日签到领奖励', missingLabels: [] }
@@ -417,9 +387,9 @@ export function resolveCheckInBannerStatusState(
 }
 ```
 
-### 7.3 第三步：添加辅助工具文件
+这类函数依然叫 `resolve*`，因为它做的不是“拿一个值”，而是把 `view` 再组织成一个更适合局部 UI 的状态模型。
 
-`checkInBannerProgress.ts` — 进度条宽度计算：
+### 3. 数值工具：`getCheckInBannerProgressWidth`
 
 ```typescript
 export const CHECK_IN_BANNER_MAX_FILL_WIDTH = 280
@@ -430,15 +400,9 @@ export function getCheckInBannerProgressWidth(ratio: number): number {
 }
 ```
 
-`checkInBannerClick.ts` — 事件处理：
+这是典型的 `get*`：只关心一个派生值，不关心结构。
 
-```typescript
-export function stopCheckInBannerClick(event: { stopPropagation: () => void }) {
-  event.stopPropagation()
-}
-```
-
-`checkInBannerRefresh.ts` — 倒计时刷新调度：
+### 4. 副作用调度：`scheduleCheckInBannerRefresh`
 
 ```typescript
 import type { ICheckInBannerBadgeView } from './checkInBannerView'
@@ -458,35 +422,18 @@ export function scheduleCheckInBannerRefresh({
     void refresh()
   }, badge.remainingSeconds * 1000)
 
-  return () => { globalThis.clearTimeout(timer) }
+  return () => {
+    globalThis.clearTimeout(timer)
+  }
 }
 ```
 
-`checkInBannerCarousel.ts` — 奖励轮播调度：
+只要看到返回值是 `() => void`，调用方就会自然联想到 cleanup。
+
+### 5. 模块入口：`resolveCheckInBannerEntries`
 
 ```typescript
-export const CHECK_IN_CAROUSEL_INTERVAL = 1500
-
-export function scheduleCheckInBannerCarousel({
-  rewardCount,
-  onTick,
-}: {
-  rewardCount: number
-  onTick: () => void
-}): () => void {
-  if (rewardCount <= 1) return () => {}
-
-  const timer = globalThis.setInterval(onTick, CHECK_IN_CAROUSEL_INTERVAL)
-
-  return () => { globalThis.clearInterval(timer) }
-}
-```
-
-### 7.4 第四步：聚合入口
-
-`checkInBannerState.ts` — 对外暴露统一的入口函数，组装所有模块：
-
-```typescript
+import type { ICheckInActivity, ICheckInProgress } from '@/interfaces/common'
 import type { ICheckInBannerView } from './checkInBannerView'
 import { resolveCheckInBannerView } from './checkInBannerView'
 
@@ -511,17 +458,15 @@ export function resolveCheckInBannerEntries({
 }
 ```
 
-### 7.5 第五步：组件消费
+虽然这里返回的是数组，但它依然是 `resolve*`，因为它在定义模块入口结构，而不是取一个零散值。
 
-`CheckInBanner.vue` — 组件只依赖 View 和工具函数：
+### 6. 组件消费：只依赖 View 和工具函数
 
 ```vue
 <script setup lang="ts">
 import type { ICheckInBannerView } from './checkInBannerView'
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { stopCheckInBannerClick } from './checkInBannerClick'
+import { computed, onBeforeUnmount, watch } from 'vue'
 import { getCheckInBannerProgressWidth } from './checkInBannerProgress'
-import { scheduleCheckInBannerCarousel } from './checkInBannerCarousel'
 import { scheduleCheckInBannerRefresh } from './checkInBannerRefresh'
 import { resolveCheckInBannerStatusState } from './checkInBannerStatus'
 
@@ -530,40 +475,11 @@ const props = defineProps<{
   onRefresh?: () => void | Promise<void>
 }>()
 
-const emit = defineEmits<{ openDialog: [] }>()
-
-// 状态子视图
 const status = computed(() => resolveCheckInBannerStatusState(props.view))
+const fillWidth = computed(() => getCheckInBannerProgressWidth(props.view.progressRatio))
 
-// 进度条宽度
-const fillWidth = computed(() => px2vw(getCheckInBannerProgressWidth(props.view.progressRatio)))
-
-// 奖励轮播
-const activeRewardIndex = ref(0)
-const activeReward = computed(() => props.view.rewards[activeRewardIndex.value] ?? null)
-
-let stopCarousel = () => {}
-watch(
-  () => props.view.rewards,
-  (rewards) => {
-    stopCarousel()
-    stopCarousel = scheduleCheckInBannerCarousel({
-      rewardCount: rewards.length,
-      onTick: () => {
-        activeRewardIndex.value = (activeRewardIndex.value + 1) % rewards.length
-      },
-    })
-  },
-  { immediate: true },
-)
-
-// 等级变更时重置轮播
-watch(() => props.view.currentLevel, () => {
-  activeRewardIndex.value = 0
-})
-
-// 倒计时刷新
 let stopRefresh = () => {}
+
 watch(
   () => props.view.badge,
   (badge) => {
@@ -577,173 +493,123 @@ watch(
 )
 
 onBeforeUnmount(() => {
-  stopCarousel()
   stopRefresh()
 })
 </script>
 
 <template>
-  <div class="check_in_banner" @click="emit('openDialog')">
-    <div class="banner_body">
-      <!-- 进度条 -->
-      <div class="progress_track">
-        <div class="progress_fill" :style="{ width: fillWidth }" />
-      </div>
-      <!-- 状态文字 -->
-      <span :class="`status_text is-${status.mode}`">{{ status.text }}</span>
-      <!-- 缺失项列表 -->
-      <span v-for="item in status.missingLabels" :key="item" class="missing_tag">
-        {{ item }}
-      </span>
-      <!-- 奖励轮播 -->
-      <img
-        v-if="activeReward"
-        :src="activeReward.icon"
-        :alt="activeReward.name"
-        class="reward_icon"
-      />
-      <!-- 徽章 -->
-      <img
-        v-if="view.badge"
-        :src="view.badge.iconUrl"
-        class="badge_icon"
-        @click="stopCheckInBannerClick"
-      />
-    </div>
-  </div>
-</template>
-```
+  <div class="check_in_banner">
+    <div class="progress_fill" :style="{ width: `${fillWidth}px` }" />
+    <span :class="`status_text is-${status.mode}`">{{ status.text }}</span>
 
-### 7.6 第六步：页面中组装
+    <span v-for="item in status.missingLabels" :key="item" class="missing_tag">
+      {{ item }}
+    </span>
 
-`CheckInRail.vue` — 页面级组件，连接 Store 与 Banner：
-
-```vue
-<script setup lang="ts">
-import { computed } from 'vue'
-import useStore from '../../store'
-import { resolveCheckInBannerEntries } from './checkInBannerState'
-import CheckInBanner from './CheckInBanner.vue'
-
-const store = useStore()
-
-const entries = computed(() => resolveCheckInBannerEntries({
-  activity: store.checkInActivity,
-  displayProgress: store.displayCheckInProgress,
-}))
-
-async function handleRefresh() {
-  await store.fetchLatestActivity()
-}
-</script>
-
-<template>
-  <div v-if="entries.length > 0" class="check_in_rail">
-    <CheckInBanner
-      v-for="entry in entries"
-      :key="entry.type"
-      :view="entry.view"
-      :on-refresh="handleRefresh"
-      @open-dialog="store.openCheckInDialog()"
+    <img
+      v-if="props.view.badge"
+      :src="props.view.badge.iconUrl"
+      class="badge_icon"
     />
   </div>
 </template>
 ```
 
-### 7.7 最终文件结构
+这个例子里，组件层的职责很清楚：
 
-```
-CheckInBannerRail/
-├── checkInBannerView.ts             # View 接口 + resolveCheckInBannerView
-├── checkInBannerStatus.ts           # resolveCheckInBannerStatusState
-├── checkInBannerProgress.ts         # getCheckInBannerProgressWidth
-├── checkInBannerClick.ts            # stopCheckInBannerClick
-├── checkInBannerRefresh.ts          # scheduleCheckInBannerRefresh
-├── checkInBannerCarousel.ts         # scheduleCheckInBannerCarousel
-├── checkInBannerState.ts            # resolveCheckInBannerEntries（入口）
-├── CheckInBanner.vue                # 组件
-├── CheckInRail.vue                  # 页面级组装
-├── checkInBannerView.test.ts        # 核心 ViewModel 单测
-├── checkInBannerStatus.test.ts      # 状态子视图单测
-├── checkInBannerProgress.test.ts
-├── checkInBannerClick.test.ts
-├── checkInBannerRefresh.test.ts
-└── checkInBannerCarousel.test.ts
+- 收到 `view`
+- 调 `resolve*` 处理子状态
+- 调 `get*` 取派生值
+- 调 `schedule*` 管理副作用
+
+组件不需要知道 domain 数据的原始结构，也不需要自己拼装复杂业务逻辑。
+
+## 六、接口和文件命名，只需要保持一致
+
+接口和文件命名没有必要搞成一整套复杂规则，但最好保持稳定。
+
+### 接口
+
+如果团队习惯使用 `I` 前缀，可以这样约定：
+
+| 元素 | 示例 |
+|------|------|
+| View 接口 | `ICheckInBannerView` |
+| View 子结构 | `ICheckInBannerBadgeView` |
+| 状态接口 | `ICheckInBannerStatusState` |
+| 入口类型 | `ICheckInBannerEntry` |
+
+如果团队本来就不用 `I` 前缀，也没必要为了这篇文章强行改风格。这里真正重要的是后缀一致性，比如 `*View`、`*State`、`*Entry`。
+
+### 文件
+
+文件名最好直接对应它暴露的核心概念：
+
+```text
+checkInBannerView.ts
+checkInBannerStatus.ts
+checkInBannerProgress.ts
+checkInBannerRefresh.ts
+checkInBannerState.ts
 ```
 
-核心 ViewModel 的单元测试示例（`checkInBannerView.test.ts`）：
+这样做的好处是，读目录时就能大致知道每个文件负责哪一层。
+
+## 七、什么时候不要过度使用这套规范
+
+这是我觉得原本最容易被忽略的一点。
+
+这套命名规范适合：
+
+- 逻辑比较厚的 UI 模块
+- 组件已经出现多个派生状态
+- 有副作用需要统一清理
+- 需要把 store/domain 和组件层解耦
+
+这套命名规范不一定适合：
+
+- 非常简单的展示组件
+- 一次性页面代码
+- 只有一两个字段映射的小模块
+
+如果一个组件只有几十行，只有一个 `computed`，为了“规范”硬拆出 `view.ts`、`state.ts`、`progress.ts`，反而会让代码更碎。
+
+经验上我会这样判断：
+
+- 复杂度还低时，先别拆
+- 当组件里已经开始同时出现“数据组装 + 状态派生 + 副作用”时，再引入这套约定
+
+## 八、补充：`stop*` 适合作为局部辅助命名
+
+我现在不会把 `stop*` 放进“四大核心前缀”里，但它依然是一个很实用的补充命名。
+
+例如：
 
 ```typescript
-import { describe, expect, it } from 'vitest'
-import { resolveCheckInBannerView } from './checkInBannerView'
-
-describe('resolveCheckInBannerView', () => {
-  it('returns null when activity is null', () => {
-    expect(resolveCheckInBannerView(null)).toBeNull()
-  })
-
-  it('returns pending status when no progress made', () => {
-    const activity = { userName: 'Alice', target: { coin: 10 }, current: { coin: 0 } }
-    const view = resolveCheckInBannerView(activity)
-    expect(view).not.toBeNull()
-    expect(view!.statusText).toBe('每日签到领奖励')
-    expect(view!.progressRatio).toBe(0)
-  })
-
-  it('returns completed status when all targets met', () => {
-    const activity = { userName: 'Bob', target: { coin: 5 }, current: { coin: 5 } }
-    const view = resolveCheckInBannerView(activity)
-    expect(view!.isCompleted).toBe(true)
-    expect(view!.statusText).toBe('签到完成')
-  })
-
-  it('returns partial progress with correct ratio', () => {
-    const activity = {
-      userName: 'Carol',
-      target: { coin: 10, gem: 5 },
-      current: { coin: 5, gem: 0 },
-    }
-    const view = resolveCheckInBannerView(activity)
-    expect(view!.progressRatio).toBe(5 / 15)
-    expect(view!.isCompleted).toBe(false)
-  })
-})
+export function stopCheckInBannerClick(event: { stopPropagation: () => void }) {
+  event.stopPropagation()
+}
 ```
 
-### 7.8 模板：新建功能模块的 Checklist
+这类函数通常很短，适合用在下面这些场景：
 
-当需要新增一个功能模块时，按以下顺序创建文件：
+- 给阻止事件的行为起一个明确名字
+- 避免在模板里塞内联箭头函数
+- 让模板读起来更接近业务语义
 
-1. **View 接口 + 主 resolver**（`featureView.ts`）
-   - 定义 `IFeatureView` 及相关子 View 接口
-   - 实现 `resolveFeatureView(domain, progress?) → IFeatureView | null`
-   - 内部辅助函数用 `get*`、`pick*`、`normalize*` 命名
-   - 先写单测
-2. **子视图 resolver**（`featureStatus.ts`、`featureMetrics.ts` 等）
-   - 实现 `resolveFeature<子视图>State(view: IFeatureView) → IFeatureXxxState`
-3. **数值工具**（`featureProgress.ts` 等）
-   - 导出 `getFeature<值名>(...) → number | string` 形式的纯函数 + 常量
-4. **事件处理**（`featureClick.ts`）
-   - 导出 `stopFeature<行为>(event) → void`
-5. **副作用调度**（`featureRefresh.ts`、`featureCarousel.ts` 等）
-   - 导出 `scheduleFeature<行为>(config) → () => void`
-6. **模块入口**（`featureState.ts`）
-   - 导出 `resolveFeatureEntries(params) → IFeatureEntry[]`
-7. **组件**（`FeatureBanner.vue`、`FeatureRail.vue`）
-   - 只 import View 类型和工具函数，不 import domain 类型
+之所以把它放在补充位置，是因为它不像 `resolve*`、`schedule*`、`get*`、`pick*` 那样，能构成一套完整的模块职责分类。它更像一个局部命名习惯。
 
----
+## 九、总结
 
-## 八、总结
+如果只保留一条最有用的判断规则，那就是：
 
-| 前缀 | 语义 | 返回值 | 副作用 |
-|------|------|--------|--------|
-| `resolve*` | 纯数据转换 | 新数据对象 | 无 |
-| `schedule*` | 启动定时/订阅 | `() => void` 清理函数 | 有 |
-| `get*` | 取值/简单计算 | 标量或数组 | 无 |
-| `pick*` | 择优选择 + fallback | 列表或对象 | 无 |
-| `stop*` | 阻止事件 | `void` | 有 |
+**调用方需要自己管理 cleanup 的函数，用 `schedule*`；调用方只需要拿返回值继续渲染的函数，用 `resolve*`、`get*` 或 `pick*`。**
 
-**一个核心规则**：如果你预期的函数调用方需要在 `watch` 中先调用上一次的 cleanup，那么它应该是 `schedule*`；如果调用方只需要拿返回值直接渲染，那么它应该是 `resolve*` 或 `get*`。
+再细一点说：
 
-这套规范的核心价值不在于命名本身，而在于**让每个函数的职责在名字上自解释**。新人接手模块时，扫一眼 import 列表就能判断哪些函数有副作用需要管理生命周期，哪些函数是纯数据转换可以直接使用。
+- `resolve*` 负责把数据组织成可消费的结构
+- `get*` 负责拿一个值
+- `pick*` 负责按优先级选一个结果
+- `schedule*` 负责启动和停止副作用
+
+命名规范的价值，从来不在于“统一单词”，而在于**把职责信息提前暴露在名字里**。这样新人接手模块时，先看 import 列表就能知道哪些函数值得放心组合，哪些函数需要小心管理生命周期。
