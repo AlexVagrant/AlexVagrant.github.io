@@ -8,8 +8,6 @@ tags: [lazygit, claude-code, git, macos]
 
 > 本文介绍如何在 macOS 中配置 Lazygit，使其能够结合 Claude Code 自动生成符合规范的 commit 消息。
 
-# MacOS 中配置 Lazygit 结合 Claude Code 自动生成 Git Commit 消息
-
 ## 前言
 
 在日常开发工作中，写 Git commit 消息是一项既繁琐又重要的任务。一个好的 commit 消息能够帮助团队更好地理解代码变更的历史。本文将介绍如何在 macOS 中配置 Lazygit，使其能够结合 Claude Code 自动生成符合规范的 commit 消息。

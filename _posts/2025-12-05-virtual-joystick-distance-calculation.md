@@ -4,7 +4,6 @@ title: 虚拟摇杆距离计算与范围限制的数学原理
 date: 2025-12-05 11:01:00 +0800
 categories: [gameDevelopment, mathematics]
 tags: [virtualJoystick, distanceCalculation, pythagoreanTheorem, vectorOperations, phaser]
-description: 深入解析虚拟摇杆实现中距离计算的数学原理，包括欧几里得距离、勾股定理、向量缩放等核心概念。
 ---
 
 ## 前言
