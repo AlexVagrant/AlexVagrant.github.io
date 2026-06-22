@@ -1,8 +1,8 @@
 ###########
 # site.title
 
-title: AlexVagrant Blog
-description: "记录工程实践、前端、游戏开发与效率工具"
+title: AlexVagrant
+description: "Build, write, ship."
 # baseurl: "/jekyllBear" # the subpath of your site, e.g. /blog/
 url: "https://alexvagrant.github.io/" # the base hostname & protocol for your site
 host: localhost
@@ -33,6 +33,8 @@ compress_html:
     envs: []
 
 collections:
+  notes:
+    output: false
   category:
     output: true
     permalink: /category/:slug/
@@ -65,10 +67,10 @@ sass:
   style:    compressed
 
 theme_config:
-  appearance: "auto" # can be "light", "dark" or "auto"
-  back_home_text: ".." # customize text for homepage link in post layout
-  date_format: "%Y-%m-%d" # customize how date is formatted
+  appearance: "auto"
+  back_home_text: ".."
+  date_format: "%Y-%m-%d"
   month_format: "%m-%d"
-  show_description: true # show blog description in home page
+  show_description: true
 
 google_analytics: "G-X2X1M5R9RD"
