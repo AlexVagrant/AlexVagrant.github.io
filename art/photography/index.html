@@ -1,0 +1,56 @@
+---
+layout: default
+title: 摄影
+lang: zh-CN
+permalink: /art/photography/
+art_page: true
+custom_js:
+  - art-gallery
+---
+<nav class="art-back" aria-label="返回"><a href="{{ '/art/' | relative_url }}">← 艺术</a></nav>
+
+<header class="art-header art-header--gallery">
+  <p class="art-eyebrow">Art / Photography</p>
+  <h1>摄影</h1>
+  <p>光线、街道与日常中的片刻。</p>
+</header>
+
+<nav class="art-categories" aria-label="摄影分类">
+  <button type="button" class="art-categories__button" data-filter="all" aria-pressed="true">全部 <span>{{ site.data.art_demo.photos.size }}</span></button>
+  {% for category in site.data.art_demo.categories %}
+    {% assign count = 0 %}
+    {% for photo in site.data.art_demo.photos %}
+      {% if photo.category == category.id %}{% assign count = count | plus: 1 %}{% endif %}
+    {% endfor %}
+    <button type="button" class="art-categories__button" data-filter="{{ category.id }}" data-description="{{ category.description }}" aria-pressed="false">{{ category.title }} <span>{{ count }}</span></button>
+  {% endfor %}
+</nav>
+<p class="art-category-description" aria-live="polite">所有摄影作品</p>
+
+<div class="art-gallery" aria-label="摄影作品演示画廊">
+  {% for photo in site.data.art_demo.photos %}
+    <button
+      class="art-gallery__item"
+      type="button"
+      data-category="{{ photo.category }}"
+      data-full="{{ photo.url }}?format=1600w"
+      data-caption="演示图片 {{ forloop.index }} / {{ site.data.art_demo.photos.size }} · SamAlive"
+      aria-label="放大查看演示图片 {{ forloop.index }}"
+    >
+      <img
+        src="{{ photo.url }}?format=500w"
+        srcset="{{ photo.url }}?format=500w 500w, {{ photo.url }}?format=1000w 1000w"
+        sizes="(max-width: 640px) 100vw, (max-width: 900px) 50vw, 33vw"
+        width="{{ photo.width }}"
+        height="{{ photo.height }}"
+        alt="SamAlive 摄影作品演示图 {{ forloop.index }}"
+        {% if forloop.index > 3 %}loading="lazy"{% else %}loading="eager"{% endif %}
+        decoding="async"
+      >
+    </button>
+  {% endfor %}
+</div>
+
+<p class="art-demo-note">当前图片来自 <a href="{{ site.data.art_demo.source }}" target="_blank" rel="noopener noreferrer">SamAlive</a>，仅用于栏目样式演示。点击图片可放大，使用方向键切换。</p>
+
+{% include art_lightbox.html %}

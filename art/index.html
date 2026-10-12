@@ -1,0 +1,33 @@
+---
+layout: default
+title: 艺术
+lang: zh-CN
+permalink: /art/
+art_page: true
+---
+<nav class="art-back" aria-label="返回"><a href="{{ '/' | relative_url }}">← 返回首页</a></nav>
+
+<header class="art-header">
+  <p class="art-eyebrow">AlexVagrant / Art</p>
+  <h1>艺术</h1>
+  <p>一个存放视觉作品的角落。</p>
+</header>
+
+<nav class="art-category-grid" aria-label="艺术分类">
+  {% assign cover = site.data.art_demo.photos[0] %}
+  <a class="art-category-card art-category-card--photo" href="{{ '/art/photography/' | relative_url }}">
+    <img src="{{ cover.url }}?format=500w" srcset="{{ cover.url }}?format=500w 500w, {{ cover.url }}?format=1000w 1000w" sizes="(max-width: 700px) 100vw, 50vw" width="{{ cover.width }}" height="{{ cover.height }}" alt="SamAlive 摄影作品演示图" fetchpriority="high">
+    <span class="art-category-card__title"><span>摄影</span><span>↗</span></span>
+    <span class="art-category-card__description">人像 · 街头 · 日常</span>
+  </a>
+  {% for category in site.data.art_categories %}
+    {% assign artwork = category.works[0] %}
+    <a class="art-category-card" href="{{ '/art/' | append: category.id | append: '/' | relative_url }}">
+      <img src="{{ artwork.small }}" width="{{ artwork.width }}" height="{{ artwork.height }}" alt="{{ artwork.title }}，{{ artwork.artist }}" loading="lazy" decoding="async">
+      <span class="art-category-card__title"><span>{{ category.title }}</span><span>↗</span></span>
+      <span class="art-category-card__description">{{ category.description }}</span>
+    </a>
+  {% endfor %}
+</nav>
+
+<p class="art-demo-note">分类图片仅用于样式演示。摄影图片来自 <a href="{{ site.data.art_demo.source }}" target="_blank" rel="noopener noreferrer">SamAlive</a>；其他作品来自 <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>。</p>

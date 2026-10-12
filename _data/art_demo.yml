@@ -1,0 +1,62 @@
+# Temporary external images for previewing the art section.
+# Replace these links with your own image CDN before publishing.
+source: https://www.samalive.co/
+categories:
+  - id: portrait
+    title: 人像
+    description: 人与光线
+  - id: street
+    title: 街头
+    description: 城市中的片刻
+  - id: everyday
+    title: 日常
+    description: 安静的生活场景
+photos:
+  - url: https://images.squarespace-cdn.com/content/v1/5446d0aee4b0c623265fea2d/cbdf0cd0-f2c7-41f8-8d16-25de9acff9b3/20260510-IMG_2857+copy.webp
+    width: 1600
+    height: 1067
+    category: portrait
+  - url: https://images.squarespace-cdn.com/content/v1/5446d0aee4b0c623265fea2d/0ff6509e-c0fd-45a8-9643-b08a1d31e5a4/20260728-IMG_1863.webp
+    width: 2048
+    height: 1366
+    category: street
+  - url: https://images.squarespace-cdn.com/content/v1/5446d0aee4b0c623265fea2d/9d751d26-956f-404b-a94a-3d4ca7ff1d94/20251204-IMG_4147+copy.webp
+    width: 1366
+    height: 2048
+    category: everyday
+  - url: https://images.squarespace-cdn.com/content/v1/5446d0aee4b0c623265fea2d/a88e8a71-23ba-4ebd-8487-01ce5da8b4e7/20260129-IMG_8863+copy.webp
+    width: 1600
+    height: 1067
+    category: street
+  - url: https://images.squarespace-cdn.com/content/v1/5446d0aee4b0c623265fea2d/bdbd0398-680b-42e2-8d17-a066c7cbd6f3/20260818-IMG_6162+copy.webp
+    width: 1366
+    height: 2048
+    category: portrait
+  - url: https://images.squarespace-cdn.com/content/v1/5446d0aee4b0c623265fea2d/1ca8cec4-f8a6-4316-8988-4fa0e2e40e45/20260510-IMG_1899+copy.webp
+    width: 1600
+    height: 1067
+    category: everyday
+  - url: https://images.squarespace-cdn.com/content/v1/5446d0aee4b0c623265fea2d/ac1497b6-7229-40e9-b4f8-ba9450e85390/20260213-IMG_8506+copy.webp
+    width: 1600
+    height: 1067
+    category: portrait
+  - url: https://images.squarespace-cdn.com/content/v1/5446d0aee4b0c623265fea2d/bf54e8b9-01d2-4a6c-8f09-7a7ece146ffc/20260117-IMG_6103+copy.webp
+    width: 1067
+    height: 1600
+    category: everyday
+  - url: https://images.squarespace-cdn.com/content/v1/5446d0aee4b0c623265fea2d/0bfb54ac-52a1-4198-90db-6d7dcc9234ca/20251112-IMG_7636+copy.webp
+    width: 1600
+    height: 1067
+    category: portrait
+  - url: https://images.squarespace-cdn.com/content/v1/5446d0aee4b0c623265fea2d/e5b0d0e4-0bde-4102-a407-b5b1df7f6e28/20260129-IMG_8940+copy.webp
+    width: 1600
+    height: 1067
+    category: everyday
+  - url: https://images.squarespace-cdn.com/content/v1/5446d0aee4b0c623265fea2d/874679dc-a173-4d05-9f9a-ebf8ad4ef89f/20260113-IMG_5581+copy.webp
+    width: 1067
+    height: 1600
+    category: street
+  - url: https://images.squarespace-cdn.com/content/v1/5446d0aee4b0c623265fea2d/3eb861f9-6f59-4a1e-ae6d-cdf452037c85/20260214-IMG_9160+copy.webp
+    width: 1600
+    height: 1067
+    category: street

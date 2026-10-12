@@ -12,6 +12,9 @@ entries:
   - title: 分类
     category_list: true
 
+  - title: 艺术
+    url: /art/
+
   - title: 关于
     url: about
 

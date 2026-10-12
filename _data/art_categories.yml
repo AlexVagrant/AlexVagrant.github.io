@@ -1,0 +1,81 @@
+# External demo artwork only. Replace with the blog owner's work before publishing.
+- id: painting
+  title: 绘画
+  english: Painting
+  description: 色彩与画布
+  works:
+    - title: 大碗岛的星期天下午
+      artist: Georges Seurat
+      width: 20000
+      height: 13313
+      small: https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/A_Sunday_on_La_Grande_Jatte%2C_Georges_Seurat%2C_1884.jpg/500px-A_Sunday_on_La_Grande_Jatte%2C_Georges_Seurat%2C_1884.jpg
+      large: https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/A_Sunday_on_La_Grande_Jatte%2C_Georges_Seurat%2C_1884.jpg/1280px-A_Sunday_on_La_Grande_Jatte%2C_Georges_Seurat%2C_1884.jpg
+      source: https://commons.wikimedia.org/wiki/File:A_Sunday_on_La_Grande_Jatte,_Georges_Seurat,_1884.jpg
+    - title: 睡莲
+      artist: Claude Monet
+      width: 4044
+      height: 1976
+      small: https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/Claude_Monet_-_Water_Lilies%2C_1917-1919.JPG/500px-Claude_Monet_-_Water_Lilies%2C_1917-1919.JPG
+      large: https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/Claude_Monet_-_Water_Lilies%2C_1917-1919.JPG/1280px-Claude_Monet_-_Water_Lilies%2C_1917-1919.JPG
+      source: https://commons.wikimedia.org/wiki/File:Claude_Monet_-_Water_Lilies,_1917-1919.JPG
+    - title: 阿尔勒的卧室
+      artist: Vincent van Gogh
+      width: 2048
+      height: 1605
+      small: https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Bedroom_of_Van_Gogh_in_Arles.jpg/500px-Bedroom_of_Van_Gogh_in_Arles.jpg
+      large: https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Bedroom_of_Van_Gogh_in_Arles.jpg/1280px-Bedroom_of_Van_Gogh_in_Arles.jpg
+      source: https://commons.wikimedia.org/wiki/File:Bedroom_of_Van_Gogh_in_Arles.jpg
+
+- id: drawing
+  title: 绘图
+  english: Drawing
+  description: 纸上的线条
+  works:
+    - title: 祈祷之手
+      artist: Albrecht Dürer
+      width: 710
+      height: 1039
+      small: https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/Albrecht_D%C3%BCrer_-_Study_of_an_Apostle%27s_Hands_%28Praying_Hands%29_-_WGA07062.jpg/500px-Albrecht_D%C3%BCrer_-_Study_of_an_Apostle%27s_Hands_%28Praying_Hands%29_-_WGA07062.jpg
+      large: https://upload.wikimedia.org/wikipedia/commons/d/d7/Albrecht_D%C3%BCrer_-_Study_of_an_Apostle%27s_Hands_%28Praying_Hands%29_-_WGA07062.jpg
+      source: https://commons.wikimedia.org/wiki/File:Albrecht_D%C3%BCrer_-_Study_of_an_Apostle%27s_Hands_(Praying_Hands)_-_WGA07062.jpg
+    - title: 伯利恒之星与植物
+      artist: Leonardo da Vinci
+      width: 801
+      height: 957
+      small: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/10/Leonardo_da_vinci%2C_Star_of_Bethlehem_and_other_plants.jpg/500px-Leonardo_da_vinci%2C_Star_of_Bethlehem_and_other_plants.jpg
+      large: https://upload.wikimedia.org/wikipedia/commons/1/10/Leonardo_da_vinci%2C_Star_of_Bethlehem_and_other_plants.jpg
+      source: https://commons.wikimedia.org/wiki/File:Leonardo_da_vinci,_Star_of_Bethlehem_and_other_plants.jpg
+    - title: 北斋漫画
+      artist: Katsushika Hokusai
+      width: 2312
+      height: 1488
+      small: https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Hokusai_Manga_05.jpg/500px-Hokusai_Manga_05.jpg
+      large: https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Hokusai_Manga_05.jpg/1280px-Hokusai_Manga_05.jpg
+      source: https://commons.wikimedia.org/wiki/File:Hokusai_Manga_05.jpg
+
+- id: digital
+  title: 数字艺术
+  english: Digital Art
+  description: 屏幕中的形状与颜色
+  works:
+    - title: Digital Art
+      artist: Rant 73
+      width: 4000
+      height: 6400
+      small: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Digital_Art.jpg/500px-Digital_Art.jpg
+      large: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Digital_Art.jpg/1280px-Digital_Art.jpg
+      source: https://commons.wikimedia.org/wiki/File:Digital_Art.jpg
+    - title: Sober Landscape
+      artist: Fons Heijnsbroek
+      width: 7087
+      height: 5315
+      small: https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3e/Sober_Landscape_-_digital_art_print%2C_made_after_an_original_watercolor_painting_-_artist_Fons_Heijnsbroek.jpg/500px-Sober_Landscape_-_digital_art_print%2C_made_after_an_original_watercolor_painting_-_artist_Fons_Heijnsbroek.jpg
+      large: https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3e/Sober_Landscape_-_digital_art_print%2C_made_after_an_original_watercolor_painting_-_artist_Fons_Heijnsbroek.jpg/1280px-Sober_Landscape_-_digital_art_print%2C_made_after_an_original_watercolor_painting_-_artist_Fons_Heijnsbroek.jpg
+      source: https://commons.wikimedia.org/wiki/File:Sober_Landscape_-_digital_art_print,_made_after_an_original_watercolor_painting_-_artist_Fons_Heijnsbroek.jpg
+    - title: Joy-lines
+      artist: Fons Heijnsbroek
+      width: 5315
+      height: 7087
+      small: https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Joy-lines_-_digital_art-print_-_artist_Fons_Heijnsbroek.jpg/500px-Joy-lines_-_digital_art-print_-_artist_Fons_Heijnsbroek.jpg
+      large: https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Joy-lines_-_digital_art-print_-_artist_Fons_Heijnsbroek.jpg/1280px-Joy-lines_-_digital_art-print_-_artist_Fons_Heijnsbroek.jpg
+      source: https://commons.wikimedia.org/wiki/File:Joy-lines_-_digital_art-print_-_artist_Fons_Heijnsbroek.jpg

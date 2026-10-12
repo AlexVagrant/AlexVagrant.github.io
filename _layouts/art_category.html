@@ -1,0 +1,30 @@
+---
+layout: default
+---
+{% assign category = site.data.art_categories | where: 'id', page.category_key | first %}
+<nav class="art-back" aria-label="返回"><a href="{{ '/art/' | relative_url }}">← 艺术</a></nav>
+
+<header class="art-header art-header--gallery">
+  <p class="art-eyebrow">Art / {{ category.english }}</p>
+  <h1>{{ category.title }}</h1>
+  <p>{{ category.description }}</p>
+</header>
+
+<div class="art-gallery art-gallery--works" aria-label="{{ category.title }}演示画廊">
+  {% for work in category.works %}
+    <figure class="art-work">
+      <button class="art-gallery__item" type="button" data-full="{{ work.large }}" data-caption="{{ work.title }} · {{ work.artist }}" aria-label="放大查看{{ work.title }}">
+        <img src="{{ work.small }}" width="{{ work.width }}" height="{{ work.height }}" alt="{{ work.title }}，{{ work.artist }}" {% unless forloop.first %}loading="lazy"{% endunless %} decoding="async">
+      </button>
+      <figcaption class="art-work__caption">
+        <strong>{{ work.title }}</strong>
+        <span>{{ work.artist }}</span>
+        <a href="{{ work.source }}" target="_blank" rel="noopener noreferrer">作品来源 ↗</a>
+      </figcaption>
+    </figure>
+  {% endfor %}
+</div>
+
+<p class="art-demo-note">此页为分类样式演示，作品图片由 <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a> 提供。点击图片可放大查看。</p>
+
+{% include art_lightbox.html %}

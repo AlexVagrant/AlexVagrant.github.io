@@ -4,7 +4,7 @@
 title: AlexVagrant
 description: "Build, write, ship."
 # baseurl: "/jekyllBear" # the subpath of your site, e.g. /blog/
-url: "https://alexvagrant.github.io/" # the base hostname & protocol for your site
+url: "https://alexvagrant.github.io" # the base hostname & protocol for your site
 host: localhost
 
 
