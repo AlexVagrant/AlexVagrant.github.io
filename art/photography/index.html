@@ -39,12 +39,13 @@ custom_js:
     >
       <img
         src="{{ photo.url }}?format=500w"
-        srcset="{{ photo.url }}?format=500w 500w, {{ photo.url }}?format=1000w 1000w"
-        sizes="(max-width: 640px) 100vw, (max-width: 900px) 50vw, 33vw"
+        srcset="{{ photo.url }}?format=500w 500w, {{ photo.url }}?format=750w 750w, {{ photo.url }}?format=1000w 1000w"
+        sizes="(max-width: 380px) 100vw, (max-width: 900px) 50vw, 33vw"
         width="{{ photo.width }}"
         height="{{ photo.height }}"
         alt="SamAlive 摄影作品演示图 {{ forloop.index }}"
-        {% if forloop.index > 3 %}loading="lazy"{% else %}loading="eager"{% endif %}
+        {% if forloop.index == 1 or forloop.index == 2 or forloop.index == 3 or forloop.index == 5 or forloop.index == 7 or forloop.index == 8 or forloop.index == 9 or forloop.index == 10 %}loading="eager"{% else %}loading="lazy"{% endif %}
+        {% if forloop.index == 1 or forloop.index == 7 or forloop.index == 8 or forloop.index == 9 %}fetchpriority="high"{% endif %}
         decoding="async"
       >
     </button>
